@@ -478,13 +478,7 @@ export default function App() {
   const personRGB = `rgb(${personGray},${personGray},${personGray})`;
   const oppositeRGB = `rgb(${oppositeGray},${oppositeGray},${oppositeGray})`;
 
-  const glowShadow = `0 0 ${Math.round(10 + 22 * centerProximity)}px rgba(210,210,210,${
-    0.16 + 0.2 * centerProximity
-  })`;
-  const depthShadow = `0 ${Math.round(10 + 10 * centerProximity)}px ${Math.round(
-    18 + 22 * centerProximity
-  )}px rgba(0,0,0,0.55)`;
-
+ 
   const smoothTrackGradient =
     "linear-gradient(90deg," +
     "#ffffff 0%," +
