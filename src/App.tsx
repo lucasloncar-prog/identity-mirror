@@ -478,7 +478,6 @@ export default function App() {
   const personRGB = `rgb(${personGray},${personGray},${personGray})`;
   const oppositeRGB = `rgb(${oppositeGray},${oppositeGray},${oppositeGray})`;
 
- 
   const smoothTrackGradient =
     "linear-gradient(90deg," +
     "#ffffff 0%," +
