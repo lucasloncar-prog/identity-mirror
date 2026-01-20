@@ -457,7 +457,7 @@ function HeaderLogo() {
   return (
     <img
       src={src}
-      alt="Identity Mirror"
+      alt="GrayVisions.com"
       className="h-full w-full"
       onError={() => setStage((s) => (s === 0 ? 1 : 2))}
     />
@@ -465,6 +465,10 @@ function HeaderLogo() {
 }
 
 export default function App() {
+  React.useEffect(() => {
+    document.title = "GrayVisions.com";
+  }, []);
+
   // --- Support links (replace with your handles)
   // Cash App: https://cash.app/$YourCashtag  (often opens the app if installed)
   // Venmo:    https://venmo.com/u/YourHandle (often opens the app if installed)
@@ -557,7 +561,7 @@ export default function App() {
               </div>
             </div>
             <div className="leading-[1.1]">
-              <div className="text-lg sm:text-3xl font-semibold tracking-wide leading-none">www.Identity-Mirror.com</div>
+              <div className="text-lg sm:text-3xl font-bold tracking-wide leading-none">GrayVisions.com</div>
               <div className="-mt-0.7 text-sm sm:text-base text-zinc-400 leading-tight">
                 Interactive Femininity / Masculinity Spectrum
               </div>
@@ -609,7 +613,7 @@ export default function App() {
               <h2 className="text-sm font-medium text-zinc-200">Perception shapes experience and interpretation.</h2>
 
               <p className="mt-3 w-full text-sm text-zinc-300 leading-relaxed">
-  <span className="text-zinc-100">Identity Mirror</span> exists to provide a clear, non-judgmental way to explore how people experience and interpret identity—both internally and in relation to others. By modeling <span className="text-zinc-100">femininity</span> and <span className="text-zinc-100">masculinity</span> as conceptual variables, this site makes visible something that is usually felt but rarely articulated: identity is shaped by perception, contrast, and context.
+  <span className="text-zinc-100">GrayVisions.com</span> exists to provide a clear, non-judgmental way to explore how people experience and interpret identity—both internally and in relation to others. By modeling <span className="text-zinc-100">femininity</span> and <span className="text-zinc-100">masculinity</span> as conceptual variables, this site makes visible something that is usually felt but rarely articulated: identity is shaped by perception, contrast, and context.
 </p>
 
 <p className="mt-2 w-full text-sm text-zinc-300 leading-relaxed">
@@ -1191,8 +1195,47 @@ export default function App() {
                 </DropdownPanel>
 
                 <DropdownPanel title="Identity Notes">
-                  <div className="text-xs text-zinc-300">(Notes content unchanged.)</div>
-                </DropdownPanel>
+  <div className="grid gap-3">
+    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+      <p className="text-xs text-zinc-300">
+        <span className="font-medium text-zinc-200">Identity</span> in this framework is not treated as a fixed trait or essence.
+        It is modeled as a <span className="text-zinc-200">relational and perceptual process</span> that emerges through
+        contrast, context, and repeated social feedback.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+      <p className="text-xs text-zinc-300">
+        The femininity–masculinity spectrum shown on this site represents a <span className="text-zinc-200">single
+        codependent continuum</span>, not two independent variables. An increase in one direction necessarily implies a
+        relative decrease in the other from a given perceptual standpoint.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+      <p className="text-xs text-zinc-300">
+        <span className="font-medium text-zinc-200">Perceptual equilibrium</span> (the center of the spectrum) is modeled as the
+        point of highest contextual sensitivity. Individuals near this midpoint often experience greater variability in
+        self-concept across different environments.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+      <p className="text-xs text-zinc-300">
+        Language used throughout this site is <span className="text-zinc-200">descriptive, not prescriptive</span>. Terms such as
+        feminine, masculine, positive mirroring, and negative mirroring are analytical tools intended to explain
+        perceptual mechanics — not moral judgments, diagnoses, or social prescriptions.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+      <p className="text-xs text-zinc-300">
+        This model assumes that <span className="text-zinc-200">perception is asymmetric</span>: how one experiences oneself may
+        differ substantially from how one is experienced by others. Both perspectives can be valid simultaneously.
+      </p>
+    </div>
+  </div>
+</DropdownPanel>
 
                 <DropdownPanel title="References">
                     
