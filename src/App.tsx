@@ -773,18 +773,22 @@ export default function App() {
               <span className="grid h-6 w-6 place-items-center rounded-full text-white">
                 <IconQuestionMark className="h-4.5 w-4.5" />
               </span>
-              <span>What is our mission?</span>
+              <h3 className="leading-none">What is our mission?</h3>
             </div>
+
+            <div className="mt-4 w-full text-sm leading-relaxed text-zinc-300 px-4 md:px-0">
+  Our mission is to offer a neutral, visual framework for understanding how femininity and masculinity function as <span className="text-zinc-200">relational, codependent variables</span> rather than fixed or opposing traits. Instead of treating identity as static or categorical, this tool models it as a dynamic perceptual spectrum.
+</div>
 
             <div className="mt-2 w-full rounded-2xl bg-transparent px-4 md:px-0 py-4">
               <h2 className="text-sm font-medium text-zinc-200">Perception shapes experience and interpretation.</h2>
 
               <p className="mt-3 w-full text-sm text-zinc-300 leading-relaxed">
-  <span className="text-zinc-100">GrayVisions.com</span> exists to provide a clear, non-judgmental way to explore how people experience and interpret identity—both internally and in relation to others. By modeling <span className="text-zinc-100">femininity</span> and <span className="text-zinc-100">masculinity</span> as conceptual variables, this site makes visible something that is usually felt but rarely articulated: identity is shaped by perception, contrast, and context.
+  <span className="text-zinc-100">GrayVisions.com</span> exists to make visible something that is usually experienced intuitively but rarely articulated: identity is shaped through perception, contrast, and context. By representing <span className="text-zinc-100">femininity</span> and <span className="text-zinc-100">masculinity</span> along a shared continuum, the model highlights how changes in one are always understood relative to the other.
 </p>
 
 <p className="mt-2 w-full text-sm text-zinc-300 leading-relaxed">
-  When these variables are understood as <span className="text-zinc-100">codependent</span> rather than independent, each becomes a way of describing the <span className="text-zinc-100">relative absence</span> of the other from a given perspective. This allows complex identity dynamics to be represented along a single, <span className="text-zinc-100">continuous grayscale</span> instead of opposing categories. The goal is not to classify, diagnose, or assign value—but to offer a visual language for understanding how identity shifts under social, relational, and environmental pressures.
+  When these variables are understood as <span className="text-zinc-100">interdependent</span>, identity can be explored without moral judgment, diagnosis, or prescription. The goal is not to define who someone is, but to provide a shared visual language for examining how self‑concept shifts under social, relational, and environmental pressures.
 </p>
 
               <div className="mt-4 w-full text-[11px] leading-relaxed text-zinc-300">
@@ -1017,8 +1021,15 @@ export default function App() {
                     }
                   />
 
-                  <div className="relative h-10 w-full overflow-visible pb-12">
+                  <div className="relative h-16 w-full overflow-visible pb-12">
                     {/* Bottom labels */}
+                    <div
+                      className="pointer-events-none absolute -bottom-10 left-1/2 z-20 -translate-x-1/2 px-2 py-0.5 text-[11px] text-zinc-500"
+                      aria-hidden="true"
+                    >
+                      <span className="font-semibold text-zinc-400">Click and hold to drag</span>
+                    </div>
+
                     <div
                       className={
                         "pointer-events-none absolute -bottom-10 left-0 z-20 px-1.5 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
