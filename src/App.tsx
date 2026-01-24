@@ -353,7 +353,7 @@ function KeyItem({ colorClass, label }: { colorClass: string; label: string }) {
 }
 
 
-function IconBeaker({ className = "h-5 w-5" }: { className?: string }) {
+function IconBeaker({ className = "h-3 w-3" }: { className?: string }) {
   // Beaker icon adapted from provided SVG. Use the FULL path so nothing is missing.
   return (
     <svg viewBox="0 0 45.64 45.641" className={className} fill="currentColor" aria-hidden="true">
@@ -362,7 +362,7 @@ function IconBeaker({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-function IconEye({ className = "h-5 w-5" }: { className?: string }) {
+function IconEye({ className = "h-4 w-4" }: { className?: string }) {
   // Eye icon adapted from provided SVG, simplified to currentColor
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
@@ -376,7 +376,7 @@ function IconEye({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-function IconKey({ className = "h-5 w-5" }: { className?: string }) {
+function IconKey({ className = "h-3 w-3" }: { className?: string }) {
   // Key icon adapted from provided SVG, normalized to currentColor
   return (
     <svg viewBox="0 0 16 16" className={className} fill="currentColor" aria-hidden="true">
@@ -385,7 +385,7 @@ function IconKey({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-function IconIdentityInfo({ className = "h-5 w-5" }: { className?: string }) {
+function IconIdentityInfo({ className = "h-4 w-4" }: { className?: string }) {
   // Full Illustrator export, normalized for React/Tailwind.
   // Key fix: use evenodd fill rules so interior cutouts ("text"/counters) render correctly.
   return (
@@ -418,6 +418,173 @@ function IconQuestionMark({ className = "h-5 w-5" }: { className?: string }) {
         <path d="M30.249 2.065C18.612 2.789 12.531 9.379 12 21.296h11.739c.147-4.128 2.451-7.214 6.741-7.669c4.211-.447 8.206.556 9.416 3.435c1.307 3.11-1.627 6.724-3.022 8.241c-2.582 2.813-6.776 4.865-8.95 7.9c-2.131 2.974-2.51 6.887-2.674 11.676h10.346c.145-3.062.349-5.995 1.742-7.898c2.266-3.092 5.65-4.541 8.486-6.983c2.709-2.334 5.559-5.147 6.043-9.501C53.32 7.466 42.683 1.289 30.249 2.065" />
         <ellipse cx="30.515" cy="55.567" rx="6.532" ry="6.433" />
       </g>
+    </svg>
+  );
+}
+
+function DynamicYinYang({ value, birthSex }: { value: number; birthSex: BirthSex }) {
+  // value: 0 = feminine (white), 100 = masculine (black)
+  const baseGirlGray = Math.round(255 - (value / 100) * 255);
+  const baseGuyGray = 255 - baseGirlGray;
+
+  // Invert mapping when Assigned Female at Birth is selected so visual orientation stays stable
+  const girlGray = birthSex === "F" ? baseGuyGray : baseGirlGray;
+  const guyGray = birthSex === "F" ? baseGirlGray : baseGuyGray;
+
+  const girl = `rgb(${girlGray},${girlGray},${girlGray})`;
+  const guy = `rgb(${guyGray},${guyGray},${guyGray})`;
+
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      className="h-28 w-28 min-[380px]:h-32 min-[380px]:w-32 sm:h-56 sm:w-56"
+      aria-label="Dynamic yin yang"
+    >
+      <defs>
+        <clipPath id="yyClip">
+          <circle cx="50" cy="50" r="48" />
+        </clipPath>
+      </defs>
+
+      <g clipPath="url(#yyClip)" transform="translate(100 0) scale(-1 1)">
+        {/* White / feminine half */}
+        <path d="M50 2a48 48 0 0 0 0 96V2z" fill={girl} />
+
+        {/* Black / masculine half */}
+        <path d="M50 2a48 48 0 1 1 0 96V2z" fill={guy} />
+
+        {/* Upper lobe */}
+        <circle cx="50" cy="26" r="24" fill={girl} />
+        {/* Lower lobe */}
+        <circle cx="50" cy="74" r="24" fill={guy} />
+
+        {/* Dots */}
+        <circle cx="50" cy="26" r="5" fill={guy} />
+        <circle cx="50" cy="74" r="5" fill={girl} />
+      </g>
+
+      {/* Outer ring */}
+      <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+
+      {/* Male-selected highlight: right-half ring */}
+      {birthSex === "M" && (
+        <path
+          d="M50 2 A48 48 0 0 1 50 98"
+          fill="none"
+          stroke="rgba(52,211,153,0.9)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      )}
+
+      {/* Female-selected highlight: left-half ring */}
+      {birthSex === "F" && (
+        <path
+          d="M50 98 A48 48 0 0 1 50 2"
+          fill="none"
+          stroke="rgba(52,211,153,0.9)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      )}
+    </svg>
+  );
+}
+
+function PixelClusterCircle(props: { value: number; birthSex: BirthSex }) {
+  const { value } = props;
+  // "Close-up pixel structure" of a gray tone using ONLY black/white squares.
+  // Ordered dithering keeps the pattern stable while density shifts with value.
+  const grid = 20;
+  const cell = 100 / grid;
+
+  // Target perceived gray for the current slider value (0=white, 100=black)
+  // Note: birthSex is intentionally NOT used here (you requested the structure stays the same across genders).
+  const g = Math.round(255 - (clamp(value, 0, 100) / 100) * 255);
+  const personGray = `rgb(${g},${g},${g})`;
+  const blackCoverage = (255 - g) / 255; // 0..1
+
+  // 8x8 Bayer matrix (0..63). Tiled across 20x20.
+  const bayer8 = useMemo(
+    () => [
+      [0, 48, 12, 60, 3, 51, 15, 63],
+      [32, 16, 44, 28, 35, 19, 47, 31],
+      [8, 56, 4, 52, 11, 59, 7, 55],
+      [40, 24, 36, 20, 43, 27, 39, 23],
+      [2, 50, 14, 62, 1, 49, 13, 61],
+      [34, 18, 46, 30, 33, 17, 45, 29],
+      [10, 58, 6, 54, 9, 57, 5, 53],
+      [42, 26, 38, 22, 41, 25, 37, 21],
+    ],
+    []
+  );
+
+  const cells = useMemo(() => {
+    const out: Array<{ x: number; y: number; isBlack: boolean }> = [];
+    for (let y = 0; y < grid; y++) {
+      for (let x = 0; x < grid; x++) {
+        const t = (bayer8[y % 8][x % 8] + 0.5) / 64; // 0..1
+        out.push({ x, y, isBlack: t < blackCoverage });
+      }
+    }
+    return out;
+  }, [blackCoverage, bayer8]);
+
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      className="h-28 w-28 min-[380px]:h-32 min-[380px]:w-32 sm:h-56 sm:w-56"
+      aria-label="Dithered gray pixel structure"
+    >
+      <defs>
+        <clipPath id="pcClip">
+          <circle cx="50" cy="50" r="48" />
+        </clipPath>
+      </defs>
+
+      <g clipPath="url(#pcClip)">
+        {/* White base */}
+        <rect x="0" y="0" width="100" height="100" fill="#ffffff" />
+
+        {/* 20x20 ordered-dither pixels (black/white only) */}
+        {cells.map((c, i) => (
+          <rect
+            key={i}
+            x={c.x * cell}
+            y={c.y * cell}
+            width={cell}
+            height={cell}
+            fill={c.isBlack ? "#000000" : "#ffffff"}
+          />
+        ))}
+
+        {/* Subtle grid lines to emphasize "pixel blocks" */}
+        <g opacity={0.14}>
+          {Array.from({ length: grid - 1 }).map((_, i) => (
+            <React.Fragment key={i}>
+              <line
+                x1={(i + 1) * cell}
+                y1={0}
+                x2={(i + 1) * cell}
+                y2={100}
+                stroke="rgba(0,0,0,0.35)"
+                strokeWidth={0.6}
+              />
+              <line
+                x1={0}
+                y1={(i + 1) * cell}
+                x2={100}
+                y2={(i + 1) * cell}
+                stroke="rgba(0,0,0,0.35)"
+                strokeWidth={0.6}
+              />
+            </React.Fragment>
+          ))}
+        </g>
+      </g>
+
+      {/* Outer ring shows the perceived gray tone */}
+      <circle cx="50" cy="50" r="48" fill="none" stroke={personGray} strokeWidth="3" />
     </svg>
   );
 }
@@ -644,7 +811,11 @@ export default function App() {
                   <span>Set your position</span>
                 </div>
                 <div className="mt-3 text-xs text-zinc-300">Drag the marker. Center represents perceptual equilibrium.</div>
+
+              {/* Dynamic yin-yang visualization */}
+              
               </div>
+
               <div className="px-0 py-2">
                 
                   <div className="text-[11px] leading-relaxed text-zinc-200/90">
@@ -722,6 +893,11 @@ export default function App() {
                       />
                       <div className="ml-2 text-[11px] text-zinc-400 leading-tight">
                         <span className="font-medium text-zinc-200">One Codependent Continuum</span>
+                        <div className="mt-1 text-[11px] leading-relaxed text-zinc-400">
+                          This visual gradient can be used to demonstrate how <span className="text-zinc-200">femininity</span> and
+                          <span className="text-zinc-200"> masculinity</span> are perceived across a single continuum — and how these
+                          <span className="text-zinc-200"> codependent variables</span> function together rather than as independent traits.
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -762,8 +938,51 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Dynamic yin-yang visualization (moved below Assigned Birth Sex) */}
+              <div className="mt-2 relative flex items-center justify-center gap-2 min-[380px]:gap-3 sm:gap-4 px-2 pb-2 sm:pb-12">
+                <div className="mr-2 min-[380px]:mr-4 flex flex-col items-center">
+                  <PixelClusterCircle value={value} birthSex={birthSex} />
+                  <div className="mt-2 text-xs text-zinc-400">Close-Up Pixel View</div>
+                </div>
+                
+                <span
+                  className={
+                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
+                    (birthSex === "F" ? "ring-emerald-400/80" : "ring-transparent")
+                  }
+                >
+                  Female
+                </span>
+
+                <div className="flex flex-col items-center">
+                  <DynamicYinYang value={value} birthSex={birthSex} />
+                  <div className="mt-2 text-xs text-zinc-400">
+                    Equal Opposites
+                  </div>
+                </div>
+
+                <span
+                  className={
+                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
+                    (birthSex === "M" ? "ring-emerald-400/80" : "ring-transparent")
+                  }
+                >
+                  Male
+                </span>
+              </div>
+
               <div className="mt-3 flex items-center justify-between text-xs text-zinc-400">
-                <span className="flex items-center gap-2">
+                
+                </div>
+
+                
+
+                <div className="mt-3 flex items-center justify-between text-xs text-zinc-400">
+                </div>
+
+                
+                <div className="mt-3 flex items-center justify-between text-xs text-zinc-400">
+                  <span className="flex items-center gap-2">
                   <span className="inline-block h-2 w-2 rounded-full bg-zinc-100 ring-1 ring-zinc-600" />
                   Feminine
                 </span>
@@ -777,7 +996,7 @@ export default function App() {
               {/* Slider + optional stress overlay */}
               <div
                 className={
-                  "mt-3 rounded-2xl p-3 transition-[opacity,filter] " +
+                  "mt-3 mb-10 rounded-2xl p-3 transition-[opacity,filter] " +
                   (stressRisk
                     ? "bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.10),transparent_55%)]"
                     : "bg-transparent")
@@ -798,9 +1017,26 @@ export default function App() {
                     }
                   />
 
-                  <div className="relative h-10 w-full overflow-visible">
+                  <div className="relative h-10 w-full overflow-visible pb-12">
+                    {/* Bottom labels */}
+                    <div
+                      className={
+                        "pointer-events-none absolute -bottom-10 left-0 z-20 px-1.5 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
+                        (birthSex === "F" ? "ring-emerald-400/80" : "ring-transparent")
+                      }
+                    >
+                      Female
+                    </div>
+                    <div
+                      className={
+                        "pointer-events-none absolute -bottom-10 right-0 z-20 px-1.5 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
+                        (birthSex === "M" ? "ring-emerald-400/80" : "ring-transparent")
+                      }
+                    >
+                      Male
+                    </div>
                     {/* Track (clipped), marker box can extend beyond ends */}
-                    <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                    <div className="absolute inset-0 z-0 overflow-hidden rounded-2xl">
                       <div
                         className="pointer-events-none absolute inset-0 scale-[1.02]"
                         style={{ backgroundImage: smoothTrackGradient, filter: "blur(0.7px)" }}
@@ -866,6 +1102,19 @@ export default function App() {
                       className="absolute inset-0 h-10 w-full cursor-pointer opacity-0"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Perceived gray swatch (below grayscale + slider) */}
+              <div className="mt-1 flex flex-col items-center gap-1">
+                <div
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-full ring-1 ring-black/30"
+                  style={{ backgroundColor: personRGB }}
+                  aria-hidden="true"
+                />
+                <div className="mt-1 text-xs text-zinc-400 leading-tight text-center">
+                  <div>You’re Degree Of</div>
+                  <div className="text-zinc-300">Femininity / Masculinity</div>
                 </div>
               </div>
 
