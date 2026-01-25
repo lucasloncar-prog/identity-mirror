@@ -376,6 +376,7 @@ function IconEye({ className = "h-4 w-4" }: { className?: string }) {
   );
 }
 
+
 function IconKey({ className = "h-3 w-3" }: { className?: string }) {
   // Key icon adapted from provided SVG, normalized to currentColor
   return (
@@ -589,6 +590,40 @@ function PixelClusterCircle(props: { value: number; birthSex: BirthSex }) {
   );
 }
 
+function DescartesEyeImg() {
+  // Tries a few common static-asset paths so you can quickly diagnose 404/path issues.
+  const [stage, setStage] = useState<0 | 1 | 2 | 3>(0);
+  const src =
+    stage === 0
+      ? "/spiritual%20eye%20rene%20descartes.svg"
+      : stage === 1
+        ? "spiritual%20eye%20rene%20descartes.svg" // sometimes needed depending on router/base
+        : stage === 2
+          ? "./spiritual%20eye%20rene%20descartes.svg"
+          : null;
+
+  if (!src) {
+    return (
+      <div className="mt-3 mb-2 w-full rounded-xl border border-zinc-800/70 bg-zinc-950/30 px-3 py-2 text-[11px] text-zinc-400">
+        Couldn’t load <span className="text-zinc-200">spiritual eye rene descartes.svg</span>. Make sure it’s in your
+        project’s <span className="text-zinc-200">public/</span> folder (exact spelling, case‑sensitive) and that visiting
+        <span className="text-zinc-200"> /spiritual-eye-rene-descartes.svg</span> in your browser returns the SVG (not 404).
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 mb-2 flex w-full justify-center">
+      <img
+        src={src}
+        alt="Descartes spiritual eye diagram"
+        style={{ height: "7.35rem", width: "20.58rem" }}
+        onError={() => setStage((s) => (s === 0 ? 1 : s === 1 ? 2 : 3))}
+      />
+    </div>
+  );
+}
+
 function HeaderLogo() {
   const [stage, setStage] = useState<0 | 1 | 2>(0);
   const src = stage === 0 ? "/favicon.svg" : stage === 1 ? "/favicon.ico" : null;
@@ -718,7 +753,14 @@ export default function App() {
     "rgb(52,211,153) 100%)";
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-zinc-100">
+    <div
+      className="min-h-screen text-zinc-100"
+      style={{
+        backgroundImage: `radial-gradient(rgba(255,255,255,0.08) 1px, transparent 0), radial-gradient(rgba(0,0,0,0.08) 1px, transparent 0)` ,
+        backgroundSize: "3px 3px",
+        backgroundColor: "#18181b",
+      }}
+    >
       <header className="border-b border-zinc-800/70">
         <div className="mx-auto flex max-w-5xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 py-4">
           <div className="flex items-center gap-3">
@@ -810,7 +852,7 @@ export default function App() {
               <div className="mt-1 px-0 py-2 mb-1">
                 <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-500 rounded-xl px-4 py-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full text-white">
-                    <IconBeaker className="h-7 w-7" />
+                    <IconBeaker className="h-6 w-6" />
                   </span>
                   <span>Set your position</span>
                 </div>
@@ -834,8 +876,14 @@ export default function App() {
                   </div>
                 
 
-              {/* Femininity / Masculinity Spectrum Key */}
-                
+              
+
+                  
+
+                  {/* Descartes Spiritual Eye (static SVG from /public) */}
+                  <DescartesEyeImg />
+
+                  {/* Femininity / Masculinity Spectrum Key */}
                   <div className="mt-3 mb-3 flex items-center gap-3 text-sm font-semibold text-white bg-zinc-500 rounded-xl px-3 py-1">
                     <span className="grid h-6 w-6 place-items-center rounded-full text-white">
                       <IconKey className="h-4.5 w-4.5" />
@@ -919,13 +967,14 @@ export default function App() {
                 {/* Assigned birth sex */}
               <div className="mt-1 rounded-2xl bg-transparent px-4 py-3">
                 <div className="inline-block rounded-md bg-zinc-500 px-2 py-0.5 text-xs font-medium text-white">Assigned Birth Sex:</div>
+                <div className="mt-1 text-xs text-zinc-400">Optional — used only for display in the marker.</div>
                 <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
                   <label className="flex cursor-pointer items-center gap-2 text-zinc-200">
                     <input
                       type="checkbox"
                       checked={birthSex === "F"}
                       onChange={() => toggleBirthSex("F")}
-                      className="h-4 w-4 rounded border-zinc-700 bg-zinc-950 accent-emerald-500 focus:ring-2 focus:ring-zinc-600"
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
                     />
                     Female
                   </label>
@@ -934,11 +983,11 @@ export default function App() {
                       type="checkbox"
                       checked={birthSex === "M"}
                       onChange={() => toggleBirthSex("M")}
-                      className="h-4 w-4 rounded border-zinc-700 bg-zinc-950 accent-emerald-500 focus:ring-2 focus:ring-zinc-600"
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
                     />
                     Male
                   </label>
-                  <div className="ml-auto text-xs text-zinc-500">Optional — used only for display in the marker.</div>
+                  
                 </div>
               </div>
 
@@ -951,8 +1000,8 @@ export default function App() {
                 
                 <span
                   className={
-                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
-                    (birthSex === "F" ? "ring-emerald-400/80" : "ring-transparent")
+                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
+                    (birthSex === "F" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
                   }
                 >
                   Female
@@ -967,8 +1016,8 @@ export default function App() {
 
                 <span
                   className={
-                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
-                    (birthSex === "M" ? "ring-emerald-400/80" : "ring-transparent")
+                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
+                    (birthSex === "M" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
                   }
                 >
                   Male
@@ -1220,7 +1269,7 @@ export default function App() {
                       type="checkbox"
                       checked={advanced}
                       onChange={(e) => setAdvanced(e.target.checked)}
-                      className="h-4 w-4 rounded border-zinc-700 bg-zinc-950 accent-emerald-500 focus:ring-2 focus:ring-zinc-600"
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
                     />
                     Show perceptual mechanics
                   </label>
@@ -1230,7 +1279,7 @@ export default function App() {
                       type="checkbox"
                       checked={stressRisk}
                       onChange={(e) => setStressRisk(e.target.checked)}
-                      className="h-4 w-4 rounded border-zinc-700 bg-zinc-950 accent-emerald-500 focus:ring-2 focus:ring-zinc-600"
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
                     />
                     Stress Risk Index
                   </label>
