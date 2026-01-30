@@ -593,32 +593,39 @@ function PixelClusterCircle(props: { value: number; birthSex: BirthSex }) {
 function DescartesEyeImg() {
   // Tries a few common static-asset paths so you can quickly diagnose 404/path issues.
   const [stage, setStage] = useState<0 | 1 | 2 | 3>(0);
-  const src =
+  const eyeSrc =
     stage === 0
       ? "/spiritual%20eye%20rene%20descartes.svg"
       : stage === 1
-        ? "spiritual%20eye%20rene%20descartes.svg" // sometimes needed depending on router/base
+        ? "spiritual%20eye%20rene%20descartes.svg"
         : stage === 2
           ? "./spiritual%20eye%20rene%20descartes.svg"
           : null;
 
-  if (!src) {
+  const mindBodySrc = "/Descartes_mind_and_body.svg";
+
+  if (!eyeSrc) {
     return (
       <div className="mt-3 mb-2 w-full rounded-xl border border-zinc-800/70 bg-zinc-950/30 px-3 py-2 text-[11px] text-zinc-400">
         Couldn’t load <span className="text-zinc-200">spiritual eye rene descartes.svg</span>. Make sure it’s in your
-        project’s <span className="text-zinc-200">public/</span> folder (exact spelling, case‑sensitive) and that visiting
-        <span className="text-zinc-200"> /spiritual-eye-rene-descartes.svg</span> in your browser returns the SVG (not 404).
+        project’s <span className="text-zinc-200">public/</span> folder (exact spelling, case‑sensitive).
       </div>
     );
   }
 
   return (
-    <div className="mt-3 mb-2 flex w-full justify-center">
+    <div className="mt-3 mb-2 flex w-full justify-center gap-4 flex-wrap">
       <img
-        src={src}
+        src={eyeSrc}
         alt="Descartes spiritual eye diagram"
-        style={{ height: "7.35rem", width: "20.58rem" }}
+        style={{ height: "18.4rem", width: "51.4rem" }}
         onError={() => setStage((s) => (s === 0 ? 1 : s === 1 ? 2 : 3))}
+      />
+
+      <img
+        src={mindBodySrc}
+        alt="Descartes mind–body diagram"
+        style={{ height: "18.4rem", width: "51.4rem" }}
       />
     </div>
   );
@@ -761,7 +768,7 @@ export default function App() {
         backgroundColor: "#18181b",
       }}
     >
-      <header className="border-b border-zinc-800/70">
+      <header className="border-b border-zinc-800/70 bg-zinc-800/90">
         <div className="mx-auto flex max-w-5xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="grid h-12 w-12 sm:h-16 sm:w-16 place-items-center rounded-full bg-zinc-700 ring-2 ring-zinc-700">
@@ -780,15 +787,15 @@ export default function App() {
       </header>
 
       {/* Support links centered below header */}
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto max-w-5xl px-4 mt-2">
         <div className="flex flex-col items-center py-2">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-[11px] text-zinc-500">Support the creator:</span>
+            <span className="text-xs text-zinc-400 font-medium">Support the creator:</span>
             <a
               href={CASHAPP_URL}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center rounded-full border border-emerald-600/60 bg-green-500 px-1 py-0 text-[10px] font-medium text-zinc-900 hover:bg-green-600"
+              className="inline-flex items-center rounded-full border border-emerald-600/60 bg-green-500 px-2 py-0.5 text-xs font-semibold text-zinc-900 hover:bg-green-600"
               aria-label="Support via Cash App"
             >
               Cash App
@@ -797,13 +804,13 @@ export default function App() {
               href={VENMO_URL}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center rounded-full border border-sky-600/60 bg-cyan-800 px-1 py-0 text-[10px] font-medium text-zinc-100 hover:bg-cyan-900"
+              className="inline-flex items-center rounded-full border border-sky-600/60 bg-cyan-800 px-2 py-0.5 text-xs font-semibold text-zinc-100 hover:bg-cyan-900"
               aria-label="Support via Venmo"
             >
               Venmo
             </a>
           </div>
-          <div className="mt-1 text-[11px] text-zinc-400 text-center">" wow thanks... "</div>
+          
         </div>
       </div>
 
@@ -852,7 +859,11 @@ export default function App() {
               <div className="mt-1 px-0 py-2 mb-1">
                 <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-500 rounded-xl px-4 py-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full text-white">
-                    <IconBeaker className="h-6 w-6" />
+                    <img
+                      src="/YIN%20YANG%20FLASK.svg"
+                      alt="Yin-yang flask"
+                      className="h-9 w-9 object-contain"
+                    />
                   </span>
                   <span>Set your position</span>
                 </div>
@@ -881,12 +892,12 @@ export default function App() {
                   
 
                   {/* Descartes Spiritual Eye (static SVG from /public) */}
-                  <DescartesEyeImg />
+                  
 
                   {/* Femininity / Masculinity Spectrum Key */}
                   <div className="mt-3 mb-3 flex items-center gap-3 text-sm font-semibold text-white bg-zinc-500 rounded-xl px-3 py-1">
                     <span className="grid h-6 w-6 place-items-center rounded-full text-white">
-                      <IconKey className="h-4.5 w-4.5" />
+                      <IconKey className="h-4 w-4" />
                     </span>
                     <span>Femininity / Masculinity Spectrum Key</span>
                   </div>
@@ -991,38 +1002,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Dynamic yin-yang visualization (moved below Assigned Birth Sex) */}
-              <div className="mt-2 relative flex items-center justify-center gap-2 min-[380px]:gap-3 sm:gap-4 px-2 pb-2 sm:pb-12">
-                <div className="mr-2 min-[380px]:mr-4 flex flex-col items-center">
-                  <PixelClusterCircle value={value} birthSex={birthSex} />
-                  <div className="mt-2 text-xs text-zinc-400">Close-Up Pixel View</div>
-                </div>
-                
-                <span
-                  className={
-                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
-                    (birthSex === "F" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
-                  }
-                >
-                  Female
-                </span>
-
-                <div className="flex flex-col items-center">
-                  <DynamicYinYang value={value} birthSex={birthSex} />
-                  <div className="mt-2 text-xs text-zinc-400">
-                    Equal Opposites
-                  </div>
-                </div>
-
-                <span
-                  className={
-                    "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
-                    (birthSex === "M" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
-                  }
-                >
-                  Male
-                </span>
-              </div>
+              
 
               <div className="mt-3 flex items-center justify-between text-xs text-zinc-400">
                 
@@ -1167,8 +1147,7 @@ export default function App() {
 
               {/* Perceived gray swatch (below grayscale + slider) */}
               <div className="mt-1 flex flex-col items-center gap-1">
-                <div
-                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-full ring-1 ring-black/30"
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-md ring-1 ring-black/30"
                   style={{ backgroundColor: personRGB }}
                   aria-hidden="true"
                 />
@@ -1288,13 +1267,53 @@ export default function App() {
               </div>
 
               {advanced && (
-                <div className="mt-3 grid gap-4 md:grid-cols-2">
-                  <TrackCard title="Internal perception" subtitle="White to Gray to Black" value={value} reversed={false} />
-                  <TrackCard title="External reflection" subtitle="Black to Gray to White" value={value} reversed />
+                <div className="mt-3 space-y-4">
+                  <div className="rounded-2xl border border-zinc-800/70 bg-zinc-950/30 p-3">
+                    <div className="text-sm font-medium text-zinc-200">Perceptual mechanics</div>
+                    <div className="mt-0.5 text-[11px] text-zinc-400">
+                      Visual models that illustrate how the grayscale is constructed and how the poles mirror each other.
+                    </div>
+
+                    <div className="mt-3 relative flex items-center justify-center gap-2 min-[380px]:gap-3 sm:gap-4 px-2 pb-2">
+                      <div className="mr-2 min-[380px]:mr-4 flex flex-col items-center">
+                        <PixelClusterCircle value={value} birthSex={birthSex} />
+                        <div className="mt-2 text-xs text-zinc-400">Close-Up Pixel View</div>
+                      </div>
+
+                      <span
+                        className={
+                          "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
+                          (birthSex === "F" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
+                        }
+                      >
+                        Female
+                      </span>
+
+                      <div className="flex flex-col items-center">
+                        <DynamicYinYang value={value} birthSex={birthSex} />
+                        <div className="mt-2 text-xs text-zinc-400">Equal Opposites</div>
+                      </div>
+
+                      <span
+                        className={
+                          "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
+                          (birthSex === "M" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
+                        }
+                      >
+                        Male
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <TrackCard title="Internal perception" subtitle="White to Gray to Black" value={value} reversed={false} />
+                    <TrackCard title="External reflection" subtitle="Black to Gray to White" value={value} reversed />
+                  </div>
                 </div>
               )}
             </div>
           </div>
+            </div>
 
             {/* Identity Notes + References (top-level dropdown tabs) */}
             {/* Interpretation (moved from second column) */}
@@ -1594,7 +1613,6 @@ export default function App() {
                   </DropdownPanel>
               </div>
             </div>
-          </div>
         </div>
       </main>
     </div>
