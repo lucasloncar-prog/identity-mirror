@@ -353,14 +353,6 @@ function KeyItem({ colorClass, label }: { colorClass: string; label: string }) {
 }
 
 
-function IconBeaker({ className = "h-3 w-3" }: { className?: string }) {
-  // Beaker icon adapted from provided SVG. Use the FULL path so nothing is missing.
-  return (
-    <svg viewBox="0 0 45.64 45.641" className={className} fill="currentColor" aria-hidden="true">
-      <path d="M43.183,37.582L31.209,15.429V2.232C31.209,0.99,30.17,0,28.929,0H16.707c-1.242,0-2.264,0.99-2.264,2.232v13.197L2.459,37.582c-0.914,1.689-0.868,3.74,0.115,5.391c0.983,1.649,2.766,2.668,4.686,2.668h31.115c1.92,0,3.707-1.019,4.69-2.668C44.047,41.322,44.097,39.271,43.183,37.582z M24.797,28.314c1.073,0,1.942,0.869,1.942,1.942c0,1.072-0.871,1.942-1.942,1.942c-1.072,0-1.942-0.87-1.942-1.942C22.855,29.186,23.724,28.314,24.797,28.314z M19.336,16.637c1.073,0,1.942,0.87,1.942,1.943c0,1.072-0.869,1.942-1.942,1.942c-1.073,0-1.942-0.87-1.942-1.942C17.395,17.507,18.263,16.637,19.336,16.637z M19.336,23.417c1.738,0,3.148,1.41,3.148,3.147c0,1.738-1.41,3.147-3.148,3.147c-1.739,0-3.148-1.409-3.148-3.147S17.597,23.417,19.336,23.417z M37.414,39.562c-0.404,0.688-1.143,1.094-1.938,1.094H10.159c-0.796,0-1.534-0.406-1.938-1.094c-0.404-0.688-0.415-1.528-0.028-2.226l3.043-5.47c0.434-0.782,1.29-1.23,2.18-1.145c4.041,0.385,8.583,3.842,12.642,3.688c2.174-0.083,4.192-0.875,6.114-1.934c1.085-0.6,2.45-0.207,3.052,0.877l2.219,3.982C37.828,38.033,37.818,38.875,37.414,39.562z" />
-    </svg>
-  );
-}
 
 function IconEye({ className = "h-4 w-4" }: { className?: string }) {
   // Eye icon adapted from provided SVG, simplified to currentColor
@@ -590,46 +582,6 @@ function PixelClusterCircle(props: { value: number; birthSex: BirthSex }) {
   );
 }
 
-function DescartesEyeImg() {
-  // Tries a few common static-asset paths so you can quickly diagnose 404/path issues.
-  const [stage, setStage] = useState<0 | 1 | 2 | 3>(0);
-  const eyeSrc =
-    stage === 0
-      ? "/spiritual%20eye%20rene%20descartes.svg"
-      : stage === 1
-        ? "spiritual%20eye%20rene%20descartes.svg"
-        : stage === 2
-          ? "./spiritual%20eye%20rene%20descartes.svg"
-          : null;
-
-  const mindBodySrc = "/Descartes_mind_and_body.svg";
-
-  if (!eyeSrc) {
-    return (
-      <div className="mt-3 mb-2 w-full rounded-xl border border-zinc-800/70 bg-zinc-950/30 px-3 py-2 text-[11px] text-zinc-400">
-        Couldn’t load <span className="text-zinc-200">spiritual eye rene descartes.svg</span>. Make sure it’s in your
-        project’s <span className="text-zinc-200">public/</span> folder (exact spelling, case‑sensitive).
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-3 mb-2 flex w-full justify-center gap-4 flex-wrap">
-      <img
-        src={eyeSrc}
-        alt="Descartes spiritual eye diagram"
-        style={{ height: "18.4rem", width: "51.4rem" }}
-        onError={() => setStage((s) => (s === 0 ? 1 : s === 1 ? 2 : 3))}
-      />
-
-      <img
-        src={mindBodySrc}
-        alt="Descartes mind–body diagram"
-        style={{ height: "18.4rem", width: "51.4rem" }}
-      />
-    </div>
-  );
-}
 
 function HeaderLogo() {
   const [stage, setStage] = useState<0 | 1 | 2>(0);
@@ -897,7 +849,7 @@ export default function App() {
                   {/* Femininity / Masculinity Spectrum Key */}
                   <div className="mt-3 mb-3 flex items-center gap-3 text-sm font-semibold text-white bg-zinc-500 rounded-xl px-3 py-1">
                     <span className="grid h-6 w-6 place-items-center rounded-full text-white">
-                      <IconKey className="h-4 w-4" />
+                      <IconKey className="h-4.5 w-4.5" />
                     </span>
                     <span>Femininity / Masculinity Spectrum Key</span>
                   </div>
