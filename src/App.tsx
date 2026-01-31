@@ -20,8 +20,8 @@ function DropdownPanel({
         : "bg-zinc-800/80"
       : title.startsWith("Similar") || title.startsWith("Different")
         ? open
-          ? "bg-zinc-500"
-          : "bg-zinc-500/80"
+          ? "bg-zinc-700/90"
+          : "bg-zinc-700/90/80"
         : title.includes(" to ")
           ? open
             ? "bg-zinc-600"
@@ -770,7 +770,7 @@ export default function App() {
         <div className="grid gap-4 grid-cols-1">
           {/* Intro / What is identity (full-width) */}
           <div className="w-full">
-            <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-500 rounded-xl px-4 py-2">
+            <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-700/90 rounded-xl px-4 py-2">
               <span className="grid h-6 w-6 place-items-center rounded-full text-white">
                 <IconQuestionMark className="h-4.5 w-4.5" />
               </span>
@@ -809,7 +809,7 @@ export default function App() {
 
             
               <div className="mt-1 px-0 py-2 mb-1">
-                <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-500 rounded-xl px-4 py-2">
+                <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-700/90 rounded-xl px-4 py-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full text-white">
                     <img
                       src="/YIN%20YANG%20FLASK.svg"
@@ -817,7 +817,7 @@ export default function App() {
                       className="h-9 w-9 object-contain"
                     />
                   </span>
-                  <span>Set your position</span>
+                  <span>Set Your Position</span>
                 </div>
                 <div className="mt-3 text-xs text-zinc-300">Drag the marker. Center represents perceptual equilibrium.</div>
 
@@ -843,13 +843,13 @@ export default function App() {
 
                   
 
-                  {/* Descartes Spiritual Eye (static SVG from /public) */}
+                  
                   
 
                   {/* Femininity / Masculinity Spectrum Key */}
-                  <div className="mt-3 mb-3 flex items-center gap-3 text-sm font-semibold text-white bg-zinc-500 rounded-xl px-3 py-1">
+                  <div className="mt-3 mb-3 flex items-center gap-3 text-sm font-semibold text-white bg-zinc-700/90 rounded-xl px-3 py-1">
                     <span className="grid h-6 w-6 place-items-center rounded-full text-white">
-                      <IconKey className="h-4.5 w-4.5" />
+                      <IconKey className="h-4 w-4" />
                     </span>
                     <span>Femininity / Masculinity Spectrum Key</span>
                   </div>
@@ -907,7 +907,7 @@ export default function App() {
                         style={{ backgroundImage: smoothTrackGradient }}
                       />
                       <div className="ml-2 text-[11px] text-zinc-400 leading-tight">
-                        <span className="font-medium text-zinc-200">One Codependent Continuum</span>
+                        <span className="text-xs font-medium text-zinc-200">Codependent Continuum</span>
                         <div className="mt-1 text-[11px] leading-relaxed text-zinc-400">
                           This visual gradient can be used to demonstrate how <span className="text-zinc-200">femininity</span> and
                           <span className="text-zinc-200"> masculinity</span> are perceived across a single continuum — and how these
@@ -917,42 +917,17 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-400">
-                    <span>
+                  <div className="mt-2 grid grid-cols-2 items-start gap-2 text-[11px] text-zinc-400">
+                    <span className="justify-self-end pr-1">
                       <span className="font-medium text-zinc-200">Center Line</span>: perceptual equilibrium (highest contextual sensitivity)
                     </span>
-                    <span>
+                    <span className="justify-self-start pl-1">
                       <span className="font-medium text-zinc-200">Position</span>: a perception‑based slider, not a value judgment
                     </span>
                   </div>
                 
 
-                {/* Assigned birth sex */}
-              <div className="mt-1 rounded-2xl bg-transparent px-4 py-3">
-                <div className="inline-block rounded-md bg-zinc-500 px-2 py-0.5 text-xs font-medium text-white">Assigned Birth Sex:</div>
-                <div className="mt-1 text-xs text-zinc-400">Optional — used only for display in the marker.</div>
-                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
-                  <label className="flex cursor-pointer items-center gap-2 text-zinc-200">
-                    <input
-                      type="checkbox"
-                      checked={birthSex === "F"}
-                      onChange={() => toggleBirthSex("F")}
-                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                    />
-                    Female
-                  </label>
-                  <label className="flex cursor-pointer items-center gap-2 text-zinc-200">
-                    <input
-                      type="checkbox"
-                      checked={birthSex === "M"}
-                      onChange={() => toggleBirthSex("M")}
-                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                    />
-                    Male
-                  </label>
-                  
-                </div>
-              </div>
+                              </div>
 
               
 
@@ -1097,15 +1072,88 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Perceived gray swatch (below grayscale + slider) */}
-              <div className="mt-1 flex flex-col items-center gap-1">
-                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-md ring-1 ring-black/30"
-                  style={{ backgroundColor: personRGB }}
-                  aria-hidden="true"
-                />
-                <div className="mt-1 text-xs text-zinc-400 leading-tight text-center">
-                  <div>You’re Degree Of</div>
-                  <div className="text-zinc-300">Femininity / Masculinity</div>
+              {/* Assigned Birth Sex (moved below grayscale, left of degree label) */}
+              <div className="mt-1 grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+                {/* Left: Assigned Birth Sex */}
+                <div className="rounded-2xl bg-transparent px-0 py-1">
+                  <div className="inline-block rounded-md bg-zinc-700/90 px-2 py-0.5 text-xs font-medium text-white">Assigned Birth Sex:</div>
+                  <div className="mt-1 text-xs text-zinc-400">Optional — used only for display in the marker.</div>
+                  <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
+                    <label className="flex cursor-pointer items-center gap-2 text-zinc-200">
+                      <input
+                        type="checkbox"
+                        checked={birthSex === "F"}
+                        onChange={() => toggleBirthSex("F")}
+                        className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      />
+                      Female
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2 text-zinc-200">
+                      <input
+                        type="checkbox"
+                        checked={birthSex === "M"}
+                        onChange={() => toggleBirthSex("M")}
+                        className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      />
+                      Male
+                    </label>
+                  </div>
+                </div>
+
+                {/* Middle: Toggles */}
+                <div className="mt-1 flex flex-col items-start justify-center gap-2 rounded-xl bg-transparent px-3 py-2">
+                  {/* Additional Options title */}
+                  <div className="flex w-full justify-center">
+                    <div className="inline-block rounded-md bg-zinc-700/90 px-2 py-0.5 text-xs font-medium text-white">
+                      Additional Options
+                    </div>
+                  </div>
+
+                  <label className="mt-1 flex cursor-pointer items-center gap-3 text-sm text-zinc-200 text-left">
+                    <input
+                      type="checkbox"
+                      checked={advanced}
+                      onChange={(e) => setAdvanced(e.target.checked)}
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                    />
+                    Show perceptual mechanics
+                  </label>
+
+                  <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-200 text-left">
+                    <input
+                      type="checkbox"
+                      checked={stressRisk}
+                      onChange={(e) => setStressRisk(e.target.checked)}
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                    />
+                    Stress Risk Index
+                  </label>
+                </div>
+{/* Right: Degree + swatch */}
+                <div className="flex flex-col items-center">
+                  <div className="mb-1 inline-block rounded-md bg-zinc-700/90 px-2 py-0.5 text-center">
+                    <div className="text-xs text-zinc-300">Your Degree Of</div>
+                    <div className="text-sm font-medium text-white">Femininity / Masculinity</div>
+                  </div>
+
+                  <div
+                    className="mt-1 h-10 w-10 sm:h-12 sm:w-12 rounded-md ring-1 ring-black/30"
+                    style={{ backgroundColor: personRGB }}
+                    aria-hidden="true"
+                  />
+                  <div className="mt-1 flex flex-col items-center text-xs text-zinc-500 leading-tight">
+                    {birthSex === "M" ? (
+                      <>
+                        <span>{value}% Masculine</span>
+                        <span>{100 - value}% Feminine</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{100 - value}% Feminine</span>
+                        <span>{value}% Masculine</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1163,7 +1211,7 @@ export default function App() {
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 rounded-2xl bg-transparent px-4 py-3 text-xs text-zinc-400">
+                <div className="mt-0.5 rounded-2xl bg-transparent px-4 py-1 text-xs text-zinc-400">
                   Turn on <span className="text-zinc-200">Stress Risk Index </span> to view the stress rating.
                 </div>
               )}
@@ -1192,31 +1240,6 @@ export default function App() {
                   </div>
                 </div>
               )}
-
-              <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                <div className="flex flex-wrap items-center gap-4">
-                  <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-200">
-                    <input
-                      type="checkbox"
-                      checked={advanced}
-                      onChange={(e) => setAdvanced(e.target.checked)}
-                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                    />
-                    Show perceptual mechanics
-                  </label>
-
-                  <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-200">
-                    <input
-                      type="checkbox"
-                      checked={stressRisk}
-                      onChange={(e) => setStressRisk(e.target.checked)}
-                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                    />
-                    Stress Risk Index
-                  </label>
-                </div>
-                <div className="text-xs text-zinc-500">Position: {value}/100</div>
-              </div>
 
               {advanced && (
                 <div className="mt-3 space-y-4">
@@ -1264,13 +1287,12 @@ export default function App() {
                 </div>
               )}
             </div>
-          </div>
             </div>
 
             {/* Identity Notes + References (top-level dropdown tabs) */}
             {/* Interpretation (moved from second column) */}
             <div className="mt-3 w-full">
-              <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-500 rounded-xl px-4 py-2">
+              <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-700/90 rounded-xl px-4 py-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full text-white">
                   <IconEye className="h-8 w-8" />
                 </span>
@@ -1305,7 +1327,7 @@ export default function App() {
 
             {/* Identity Notes + References (top-level dropdown tabs) */}
             <div className="mt-4 w-full">
-              <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-500 rounded-xl px-4 py-2">
+              <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-700/90 rounded-xl px-4 py-2">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full text-white">
                   <IconIdentityInfo className="h-9 w-9" />
                 </span>
