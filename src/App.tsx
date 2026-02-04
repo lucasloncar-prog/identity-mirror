@@ -1,4 +1,11 @@
 import React, { useMemo, useState } from "react";
+import { Link, Route, Routes } from "react-router-dom";
+import CultDeprogrammingResources from "./pages/CultDeprogrammingResources";
+import DocumentViewer from "./pages/DocumentViewer";
+import ModelViewer from "./pages/ModelViewer";
+import RecommendedBooks from "./pages/RecommendedBooks";
+import TraumaRecoveryResources from "./pages/TraumaRecoveryResources";
+import SiteFrame from "./SiteFrame";
 
 function DropdownPanel({
   title,
@@ -352,8 +359,6 @@ function KeyItem({ colorClass, label }: { colorClass: string; label: string }) {
   );
 }
 
-
-
 function IconEye({ className = "h-4 w-4" }: { className?: string }) {
   // Eye icon adapted from provided SVG, simplified to currentColor
   return (
@@ -367,7 +372,6 @@ function IconEye({ className = "h-4 w-4" }: { className?: string }) {
     </svg>
   );
 }
-
 
 function IconKey({ className = "h-3 w-3" }: { className?: string }) {
   // Key icon adapted from provided SVG, normalized to currentColor
@@ -396,7 +400,7 @@ function IconIdentityInfo({ className = "h-4 w-4" }: { className?: string }) {
         <g>
           <path d="M388.3,354.7c-1.3-1.4-3.2-2.1-5.7-2.2c-2.6-0.1-4.6,0.6-6,1.9c-1.4,1.3-2.5,3.2-3.2,5.5c-0.7,2.3-1.1,5-1.3,7.9c-0.1,2.9-0.2,5.9-0.3,9l-1.6,75.1c-0.1,3.1-0.1,6.1-0.1,9.1c0,3,0.3,5.6,0.9,7.9c0.6,2.3,1.6,4.2,2.9,5.7c1.3,1.5,3.3,2.3,5.9,2.3c2.4,0.1,4.3-0.6,5.8-2.1c1.4-1.4,2.5-3.3,3.2-5.5c0.7-2.3,1.1-4.9,1.3-7.9c0.1-3,0.3-6,0.3-9.1l1.6-75.1c0.1-3.1,0.1-6.1,0.1-9c0-2.9-0.3-5.6-0.9-7.9C390.6,358,389.6,356.2,388.3,354.7z" />
           <path d="M505.2,357.2c-1.3-1.4-3.2-2.1-5.7-2.2c-2.6-0.1-4.6,0.6-6,1.9c-1.4,1.3-2.5,3.2-3.2,5.5c-0.7,2.3-1.1,5-1.3,7.9c-0.1,2.9-0.2,5.9-0.3,9l-1.6,75.1c-0.1,3.1-0.1,6.1-0.1,9.1c0,3,0.3,5.6,0.9,7.9c0.6,2.3,1.6,4.2,2.9,5.7c1.3,1.5,3.3,2.3,5.9,2.3c2.4,0.1,4.3-0.6,5.8-2.1c1.4-1.4,2.5-3.3,3.2-5.5c0.7,2.3,1.1-4.9,1.3-7.9c0.1-3,0.3-6,0.3-9.1l1.6-75.1c0.1-3.1,0.1-6.1,0.1-9c0-2.9-0.3-5.6-0.9-7.9C507.5,360.5,506.5,358.6,505.2,357.2z" />
-          <path d="M621.6,190.2v442.4H213.2c-18.8-1.1-33.2-17.2-32.1-36c1-17.3,14.8-31.1,32.1-32.1h374.3V122.2H213.2c-37.6,0-68,30.4-68.1,68v408.3c0,37.6,30.5,68.1,68.1,68.1h442.3V190.2H621.6z M292.8,505.5l-38.9-0.8l2.9-138.2c-5.7,2.1-10.9,3.5-15.4,3.9c-4.5,0.5-8.4,0.7-11.7,0.6l0.6-28.9c7.3-2.6,14.3-5.8,21-9.6c6.6-3.8,12.2-8,16.7-12.6l28.7,0.6L292.8,505.5z M547.8,380.6l-1.6,75.1c-0.2,9.4-1.1,17.7-2.6,24.9c-1.5,7.2-4.1,13.2-7.8,17.9c-3.7,4.8-8.7,8.3-15.2,10.6c-6.5,2.3-14.6,3.3-24.5,3.1c-10-0.2-18.2-1.6-24.5-4.3c-6.3-2.6-11.2-6.4-14.7-11.4c-3.5-4.9-5.9-11-7.1-18.1c-1.2-7.2-1.7-15.4-1.5-24.8l1.6-75.1c0.2-9.2,1.1-17.4,2.6-24.5c1.5-7.1,4.2-13,7.9-17.8c3.7-4.8,8.8-8.4,15.2-10.7c6.4-2.4,14.6-3.5,24.6-3.2c9.9,0.2,18,1.6,24.3,4.3c6.3,2.6,11.2,6.4,14.7,11.4c3.5,4.9,5.8,11,7,18.1C547.5,363.2,548,371.4,547.8,380.6z M520.3,253.6c-0.4-2.1-1.3-4-2.5-5.6c-1.2-1.6-3-3.3-5.4-5.2c-2.4-1.9-5.4-4.5-9.2-8c-2.5-2.2-4.8-4.4-6.9-6.6c-2.2-2.1-4.1-4.4-5.8-6.9c-1.7-2.4-3-5.2-3.9-8.2c-1-3-1.4-6.6-1.5-10.6c0-8.1,2.5-14.5,7.7-19.2c5.2-4.7,12.2-7.1,21.2-7.1c5.9,0,10.8,0.6,14.7,2c3.9,1.4,6.9,3.4,9.1,6.1c2.2,2.7,3.7,5.9,4.6,9.6c0.9,3.8,1.3,8,1.3,12.8l0,6.3l-23.7,0.1l0-6.3c0-2.7-0.4-5-1.2-6.8c-0.8-1.8-2.3-2.7-4.6-2.7c-1.3,0-2.5,0.5-3.7,1.4c-1.1,0.9-1.7,2.1-1.7,3.6c0,2.8,0.9,5.4,2.7,7.7c1.8,2.3,4,4.7,6.6,6.9c2.6,2.3,5.5,4.6,8.6,6.9c3.1,2.3,6,4.9,8.6,7.7c2.6,2.8,4.9,6,6.6,9.5c1.8,3.5,2.7,7.5,2.7,12c0,2.6,0,5.4-0.1,8.2c-0.1,2.8-0.4,5.6-1,8.3c-0.6,2.7-1.5,5.2-2.7,7.6c-1.2,2.4-2.9,4.5-5,6.4c-2.2,1.8-4.9,3.3-8.2,4.3c-3.3,1.1-7.4,1.6-12.3,1.6c-4.9,0-9-0.4-12.3-1.3c-3.3-0.9-6.1-2.2-8.4-3.8c-2.3-1.6-4-3.5-5.3-5.8c-1.3-2.2-2.2-4.5-2.9-7c-0.6-2.5-1-5.1-1.2-7.8c-0.2-2.7-0.2-5.4-0.3-8l-0.1-11l23.7-0.1l0.1,11c0,1.7,0.1,3.3,0.2,4.9c0.1,1.5,0.4,2.9,0.8,4.1c0.4,1.2,1.1,2.1,1.9,2.8c0.9,0.7,2.1,1,3.7,1c1.6,0,3-0.6,4.1-1.8c1.2-1.2,1.7-2.6,1.7-4.2C520.9,258.7,520.7,255.7,520.3,253.6z M477.2,177.9l0.1,21.1l-13.7,0.1l0.5,89.4l-23.7,0.1l-0.5-89.4l-13.7,0.1l-0.1-21.1L477.2,177.9z M422.4,335.4c3.5,4.9,5.8,11,7,18.1c1.2,7.2,1.7,15.3,1.5,24.6l-1.6,75.1c-0.2,9.4-1.1,17.7-2.6,24.9c-1.5,7.2-4.1,13.2-7.8,17.9c-3.7,4.8-8.7,8.3-15.2,10.6c-6.5,2.3-14.6,3.3-24.5,3.1c-10-0.2-18.2-1.6-24.5-4.3s-11.2-6.4-14.7-11.4c-3.5-4.9-5.9-11-7.1-18.1c-1.2-7.2-1.7-15.4-1.5-24.8l1.6-75.1c0.2-9.2,1.1-17.4,2.6-24.5c1.5-7.1,4.2-13,7.9-17.8c3.7-4.8,8.8-8.4,15.2-10.7c6.4-2.4,14.6-3.5,24.6-3.2c9.9,0.2,18,1.6,24.3,4.3C414,326.7,418.9,330.5,422.4,335.4z M359.1,199.8c0.8-4.7,2.3-8.7,4.5-12.1c2.2-3.3,5.2-6,9.1-7.8c3.9-1.9,8.9-2.8,15-2.8c5.9,0,10.8,0.9,14.8,2.7c3.9,1.8,7,4.4,9.3,7.6c2.3,3.3,3.9,7.3,4.8,12c0.9,4.7,1.4,10,1.4,15.7l0,5.5l-23.7,0.1l0-5.5c0-2.4-0.1-4.7-0.2-6.8c-0.1-2.1-0.4-3.9-0.8-5.4c-0.4-1.5-1.1-2.7-1.9-3.5c-0.9-0.8-2-1.3-3.5-1.2c-1.6,0-2.8,0.4-3.7,1.3s-1.5,2-1.9,3.5c-0.4,1.5-0.6,3.3-0.7,5.4c0,2.1,0,4.4,0,6.8l0.2,36.9c0,2.4,0,4.7,0.1,6.8c0.1,2.1,0.3,3.9,0.7,5.4c0.4,1.5,1.1,2.7,1.9,3.5c0.9,0.8,2.1,1.3,3.7,1.2c1.6,0,2.8-0.4,3.7-1.3c0.8-0.9,1.5-2,1.9-3.5c0.4-1.5,0.6-3.3,0.7-5.4c0-2.1,0-4.4,0-6.8l0-5.5l23.7-0.1l0,5.5c0,5.7-0.4,11-1.2,15.7c-0.8,4.7-2.3,8.7-4.5,12.1c-2.2,3.4-5.2,6-9.1,7.8c-3.9,1.9-8.9,2.8-15,2.8c-6.1,0-11.1-0.9-15-2.7c-3.9-1.8-7-4.4-9.2-7.7c-2.2-3.3-3.8-7.3-4.7-12c-0.9-4.7-1.3-9.9-1.4-15.6l-0.2-36.9C357.9,209.7,358.3,204.5,359.1,199.8z M299.8,179l35-0.2l14.6,110.5l-23.3,0.1l-1.6-15.8l-13.3,0.1l-1.5,15.8l-23.3,0.1L299.8,179z M277.1,179.1l0.1,21.1l-23.8,0.1l0.1,17.8l23.8-0.1l0.1,21.2l-23.8,0.1l0.3,50.5l-23.7,0.1l-0.7-110.5L277.1,179.1z" />
+          <path d="M621.6,190.2v442.4H213.2c-18.8-1.1-33.2-17.2-32.1-36c1-17.3,14.8-31.1,32.1-32.1h374.3V122.2H213.2c-37.6,0-68,30.4-68.1,68v408.3c0,37.6,30.5,68.1,68.1,68.1h442.3V190.2H621.6z M292.8,505.5l-38.9-0.8l2.9-138.2c-5.7,2.1-10.9,3.5-15.4,3.9c-4.5,0.5-8.4,0.7-11.7,0.6l0.6-28.9c7.3-2.6,14.3-5.8,21-9.6c6.6-3.8,12.2-8,16.7-12.6l28.7,0.6L292.8,505.5z M547.8,380.6l-1.6,75.1c-0.2,9.4-1.1,17.7-2.6,24.9c-1.5,7.2-4.1,13.2-7.8,17.9c-3.7,4.8-8.7,8.3-15.2,10.6c-6.5,2.3-14.6,3.3-24.5,3.1c-10-0.2-18.2-1.6-24.5-4.3c-6.3-2.6-11.2-6.4-14.7-11.4c-3.5-4.9-5.9-11-7.1-18.1c-1.2-7.2-1.7-15.4-1.5-24.8l1.6-75.1c0.2-9.2,1.1-17.4,2.6-24.5c1.5-7.1,4.2-13,7.9-17.8c3.7-4.8,8.8-8.4,15.2-10.7c6.4-2.4,14.6-3.5,24.6-3.2c9.9,0.2,18,1.6,24.3,4.3c6.3,2.6,11.2,6.4,14.7,11.4c3.5,4.9,5.8,11,7,18.1C547.5,363.2,548,371.4,547.8,380.6z M520.3,253.6c-0.4-2.1-1.3-4-2.5-5.6c-1.2-1.6-3-3.3-5.4-5.2c-2.4-1.9-5.4-4.5-9.2-8c-2.5-2.2-4.8-4.4-6.9-6.6c-2.2-2.1-4.1-4.4-5.8-6.9c-1.7-2.4-3-5.2-3.9-8.2c-1-3-1.4-6.6-1.5-10.6c0-8.1,2.5-14.5,7.7-19.2c5.2-4.7,12.2-7.1,21.2-7.1c5.9,0,10.8,0.6,14.7,2c3.9,1.4,6.9,3.4,9.1,6.1c2.2,2.7,3.7,5.9,4.6,9.6c0.9,3.8,1.3,8,1.3,12.8l0,6.3l-23.7,0.1l0-6.3c0-2.4-0.4-5-1.2-6.8c-0.8-1.8-2.3-2.7-4.6-2.7c-1.3,0-2.5,0.5-3.7,1.4c-1.1,0.9-1.7,2.1-1.7,3.6c0,2.8,0.9,5.4,2.7,7.7c1.8,2.3,4,4.7,6.6,6.9c2.6,2.3,5.5,4.6,8.6,6.9c3.1,2.3,6,4.9,8.6,7.7c2.6,2.8,4.9,6,6.6,9.5c1.8,3.5,2.7,7.5,2.7,12c0,2.6,0,5.4-0.1,8.2c-0.1,2.8-0.4,5.6-1,8.3c-0.6,2.7-1.5,5.2-2.7,7.6c-1.2,2.4-2.9,4.5-5,6.4c-2.2,1.8-4.9,3.3-8.2,4.3c-3.3,1.1-7.4,1.6-12.3,1.6c-4.9,0-9-0.4-12.3-1.3c-3.3-0.9-6.1-2.2-8.4-3.8c-2.3-1.6-4-3.5-5.3-5.8c-1.3-2.2-2.2-4.5-2.9-7c-0.6-2.5-1-5.1-1.2-7.8c-0.2-2.7-0.2-5.4-0.3-8l-0.1-11l23.7-0.1l0.1,11c0,1.7,0.1,3.3,0.2,4.9c0.1,1.5,0.4,2.9,0.8,4.1c0.4,1.2,1.1,2.1,1.9,2.8c0.9,0.7,2.1,1,3.7,1c1.6,0,3-0.6,4.1-1.8c1.2-1.2,1.7-2.6,1.7-4.2C520.9,258.7,520.7,255.7,520.3,253.6z M477.2,177.9l0.1,21.1l-13.7,0.1l0.5,89.4l-23.7,0.1l-0.5-89.4l-13.7,0.1l-0.1-21.1L477.2,177.9z M422.4,335.4c3.5,4.9,5.8,11,7,18.1c1.2,7.2,1.7,15.3,1.5,24.6l-1.6,75.1c-0.2,9.4-1.1,17.7-2.6,24.9c-1.5,7.2-4.1,13.2-7.8,17.9c-3.7,4.8-8.7,8.3-15.2,10.6c-6.5,2.3-14.6,3.3-24.5,3.1c-10-0.2-18.2-1.6-24.5-4.3s-11.2-6.4-14.7-11.4c-3.5-4.9-5.9-11-7.1-18.1c-1.2-7.2-1.7-15.4-1.5-24.8l1.6-75.1c0.2-9.2,1.1-17.4,2.6-24.5c1.5-7.1,4.2-13,7.9-17.8c3.7-4.8,8.8-8.4,15.2-10.7c6.4-2.4,14.6-3.5,24.6-3.2c9.9,0.2,18,1.6,24.3,4.3C414,326.7,418.9,330.5,422.4,335.4z M359.1,199.8c0.8-4.7,2.3-8.7,4.5-12.1c2.2-3.3,5.2-6,9.1-7.8c3.9-1.9,8.9-2.8,15-2.8c5.9,0,10.8,0.9,14.8,2.7c3.9,1.8,7,4.4,9.3,7.6c2.3,3.3,3.9,7.3,4.8,12c0.9,4.7,1.4,10,1.4,15.7l0,5.5l-23.7,0.1l0-5.5c0-2.4-0.1-4.7-0.2-6.8c-0.1-2.1-0.4-3.9-0.8-5.4c-0.4-1.5-1.1-2.7-1.9-3.5c-0.9-0.8-2-1.3-3.5-1.2c-1.6,0-2.8,0.4-3.7,1.3s-1.5,2-1.9,3.5c-0.4,1.5-0.6,3.3-0.7,5.4c0,2.1,0,4.4,0,6.8l0.2,36.9c0,2.4,0,4.7,0.1,6.8c0.1,2.1,0.3,3.9,0.7,5.4c0.4,1.5,1.1,2.7,1.9,3.5c0.9,0.8,2.1,1.3,3.7,1.2c1.6,0,2.8-0.4,3.7-1.3c0.8-0.9,1.5-2,1.9-3.5c0.4-1.5,0.6-3.3,0.7-5.4c0-2.1,0-4.4,0-6.8l0-5.5l23.7-0.1l0,5.5c0,5.7-0.4,11-1.2,15.7c-0.8,4.7-2.3,8.7-4.5,12.1c-2.2,3.4-5.2,6-9.1,7.8c-3.9,1.9-8.9,2.8-15,2.8c-6.1,0-11.1-0.9-15-2.7c-3.9-1.8-7-4.4-9.2-7.7c-2.2-3.3-3.8-7.3-4.7-12c-0.9-4.7-1.3-9.9-1.4-15.6l-0.2-36.9C357.9,209.7,358.3,204.5,359.1,199.8z M299.8,179l35-0.2l14.6,110.5l-23.3,0.1l-1.6-15.8l-13.3,0.1l-1.5,15.8l-23.3,0.1L299.8,179z M277.1,179.1l0.1,21.1l-23.8,0.1l0.1,17.8l23.8-0.1l0.1,21.2l-23.8,0.1l0.3,50.5l-23.7,0.1l-0.7-110.5L277.1,179.1z" />
         </g>
       </g>
     </svg>
@@ -582,7 +586,6 @@ function PixelClusterCircle(props: { value: number; birthSex: BirthSex }) {
   );
 }
 
-
 function HeaderLogo() {
   const [stage, setStage] = useState<0 | 1 | 2>(0);
   const src = stage === 0 ? "/favicon.svg" : stage === 1 ? "/favicon.ico" : null;
@@ -625,16 +628,10 @@ function HeaderLogo() {
   );
 }
 
-export default function App() {
+function HomePage() {
   React.useEffect(() => {
     document.title = "GrayVisions.com";
   }, []);
-
-  // --- Support links (replace with your handles)
-  // Cash App: https://cash.app/$YourCashtag  (often opens the app if installed)
-  // Venmo:    https://venmo.com/u/YourHandle (often opens the app if installed)
-  const CASHAPP_URL = "https://cash.app/$lucasloncar";
-  const VENMO_URL = "https://venmo.com/u/lucasloncar1992";
 
   const [value, setValue] = useState(50);
   const [advanced, setAdvanced] = useState(false);
@@ -712,62 +709,8 @@ export default function App() {
     "rgb(52,211,153) 100%)";
 
   return (
-    <div
-      className="min-h-screen text-zinc-100"
-      style={{
-        backgroundImage: `radial-gradient(rgba(255,255,255,0.08) 1px, transparent 0), radial-gradient(rgba(0,0,0,0.08) 1px, transparent 0)` ,
-        backgroundSize: "3px 3px",
-        backgroundColor: "#18181b",
-      }}
-    >
-      <header className="border-b border-zinc-800/70 bg-zinc-800/90">
-        <div className="mx-auto flex max-w-5xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="grid h-12 w-12 sm:h-16 sm:w-16 place-items-center rounded-full bg-zinc-700 ring-2 ring-zinc-700">
-              <div className="grid h-10 w-10 sm:h-14 sm:w-14 place-items-center rounded-full bg-zinc-900/40 ring-1 ring-zinc-800/70">
-                <HeaderLogo />
-              </div>
-            </div>
-            <div className="leading-[1.1]">
-              <div className="text-lg sm:text-3xl font-bold tracking-wide leading-none">GrayVisions.com</div>
-              <div className="-mt-0.7 text-sm sm:text-base text-zinc-400 leading-tight">
-                Interactive Femininity / Masculinity Spectrum
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Support links centered below header */}
-      <div className="mx-auto max-w-5xl px-4 mt-2">
-        <div className="flex flex-col items-center py-2">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs text-zinc-400 font-medium">Support the creator:</span>
-            <a
-              href={CASHAPP_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center rounded-full border border-emerald-600/60 bg-green-500 px-2 py-0.5 text-xs font-semibold text-zinc-900 hover:bg-green-600"
-              aria-label="Support via Cash App"
-            >
-              Cash App
-            </a>
-            <a
-              href={VENMO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center rounded-full border border-sky-600/60 bg-cyan-800 px-2 py-0.5 text-xs font-semibold text-zinc-100 hover:bg-cyan-900"
-              aria-label="Support via Venmo"
-            >
-              Venmo
-            </a>
-          </div>
-          
-        </div>
-      </div>
-
-      <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-3">
-        <div className="grid gap-4 grid-cols-1">
+    <SiteFrame>
+      <div className="grid gap-4 grid-cols-1">
           {/* Intro / What is identity (full-width) */}
           <div className="w-full">
             <div className="flex w-full items-center gap-3 text-base sm:text-lg font-semibold text-white bg-zinc-700/90 rounded-xl px-4 py-2">
@@ -1539,6 +1482,34 @@ export default function App() {
   </div>
 </DropdownPanel>
 
+                <DropdownPanel title="Resources">
+                  <div className="py-2">
+                    <div className="mb-2 text-center text-[11px] font-medium text-zinc-300">
+                      Click to open resource pages
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Link
+                      to="/trauma-recovery-resources"
+                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
+                    >
+                      Trauma Recovery Resources
+                    </Link>
+                    <Link
+                      to="/recommended-books"
+                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
+                    >
+                      Recommended Books
+                    </Link>
+                    <Link
+                      to="/documents"
+                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
+                    >
+                      Documents
+                    </Link>
+                    </div>
+                  </div>
+                </DropdownPanel>
+
                 <DropdownPanel title="References">
                     
                     {/* Codependent / bipolar conceptualizations of masculinity & femininity */}
@@ -1587,9 +1558,21 @@ export default function App() {
                   </DropdownPanel>
               </div>
             </div>
-        </div>
-      </main>
-    </div>
+      </div>
+    </SiteFrame>
+  );
+}
+
+ export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/trauma-recovery-resources" element={<TraumaRecoveryResources />} />
+      <Route path="/cult-deprogramming-resources" element={<CultDeprogrammingResources />} />
+      <Route path="/recommended-books" element={<RecommendedBooks />} />
+      <Route path="/model-viewer" element={<ModelViewer />} />
+      <Route path="/documents" element={<DocumentViewer />} />
+    </Routes>
   );
 }
 
