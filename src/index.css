@@ -45,3 +45,17 @@
   min-height: 0;
   height: auto !important;
 }
+
+.react-pdf__Page {
+  max-width: 100%;
+}
+
+.react-pdf__Page canvas {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.react-pdf__Page__textContent,
+.react-pdf__Page__annotations {
+  max-width: 100% !important;
+}

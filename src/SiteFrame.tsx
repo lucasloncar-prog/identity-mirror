@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function HeaderLogo() {
   const [stage, setStage] = useState<0 | 1 | 2>(0);
@@ -36,9 +36,14 @@ function HeaderLogo() {
   );
 }
 
-export default function SiteFrame({ children }: { children: React.ReactNode }) {
+export default function SiteFrame({ children, wide }: { children: React.ReactNode; wide?: boolean }) {
   const CASHAPP_URL = "https://cash.app/$lucasloncar";
   const VENMO_URL = "https://venmo.com/u/lucasloncar1992";
+
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
+  const maxWidthClass = wide ? "max-w-7xl" : "max-w-5xl";
 
   return (
     <div
@@ -50,60 +55,57 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
         backgroundColor: "#18181b",
       }}
     >
-      <header className="border-b border-zinc-800/70 bg-zinc-800/90">
-        <div className="mx-auto flex max-w-5xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="grid h-12 w-12 sm:h-16 sm:w-16 place-items-center rounded-full bg-zinc-700 ring-2 ring-zinc-700">
-              <div className="grid h-10 w-10 sm:h-14 sm:w-14 place-items-center rounded-full bg-zinc-900/40 ring-1 ring-zinc-800/70">
+      <header className="border-b border-zinc-800/70 bg-zinc-700/90">
+        <div
+          className={
+            "mx-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 py-4 " + maxWidthClass
+          }
+        >
+          <Link to="/" className="flex items-center gap-3" aria-label="Go to home page">
+            <div className="grid h-12 w-12 sm:h-16 sm:w-16 place-items-center rounded-full bg-zinc-600 ring-2 ring-zinc-600">
+              <div className="grid h-10 w-10 sm:h-14 sm:w-14 place-items-center rounded-full bg-zinc-900/40 ring-1 ring-zinc-700/70">
                 <HeaderLogo />
               </div>
             </div>
             <div className="leading-[1.1]">
-              <div className="text-lg sm:text-3xl font-bold tracking-wide leading-none">GrayVisions.com</div>
+              <div className="text-xl sm:text-4xl font-bold tracking-wide leading-none">GrayVisions.com</div>
               <div className="-mt-0.7 text-sm sm:text-base text-zinc-400 leading-tight">
                 Interactive Femininity / Masculinity Spectrum
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-4 mt-2">
-        <div className="flex flex-col items-center py-2">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs text-zinc-400 font-medium">Support the creator:</span>
-            <a
-              href={CASHAPP_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center rounded-full border border-emerald-600/60 bg-green-500 px-2 py-0.5 text-xs font-semibold text-zinc-900 hover:bg-green-600"
-              aria-label="Support via Cash App"
-            >
-              Cash App
-            </a>
-            <a
-              href={VENMO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center rounded-full border border-sky-600/60 bg-cyan-800 px-2 py-0.5 text-xs font-semibold text-zinc-100 hover:bg-cyan-900"
-              aria-label="Support via Venmo"
-            >
-              Venmo
-            </a>
-          </div>
-
-          <div className="mt-3 flex w-full flex-wrap items-center justify-start gap-2 self-start">
-            <Link
-              to="/"
-              className="inline-flex items-center rounded-full border border-zinc-700/60 bg-zinc-700/90 px-3 py-1 text-xs font-semibold text-white hover:bg-zinc-700"
-            >
-              Home
-            </Link>
+      {isHome ? (
+        <div className={"mx-auto px-4 mt-2 " + maxWidthClass}>
+          <div className="flex flex-col items-center py-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="text-xs text-zinc-400 font-medium">Support the creator:</span>
+              <a
+                href={CASHAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center rounded-full border border-emerald-600/60 bg-green-500 px-2 py-0.5 text-xs font-semibold text-zinc-900 hover:bg-green-600"
+                aria-label="Support via Cash App"
+              >
+                Cash App
+              </a>
+              <a
+                href={VENMO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center rounded-full border border-sky-600/60 bg-cyan-800 px-2 py-0.5 text-xs font-semibold text-zinc-100 hover:bg-cyan-900"
+                aria-label="Support via Venmo"
+              >
+                Venmo
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
 
-      <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-3">{children}</main>
+      <main className={"mx-auto px-4 sm:px-6 lg:px-10 py-3 " + maxWidthClass}>{children}</main>
     </div>
   );
 }
