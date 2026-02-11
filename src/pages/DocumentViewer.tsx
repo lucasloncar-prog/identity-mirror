@@ -9,8 +9,20 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.m
 
 type ManifestDoc = {
   title: string;
-  file: string;
+  file?: string;
+  url?: string;
+  downloadName?: string;
 };
+
+function docId(d: ManifestDoc) {
+  return d.url || d.file || d.title;
+}
+
+function docUrl(d: ManifestDoc) {
+  if (d.url) return d.url;
+  if (d.file) return `/documents/${encodeURIComponent(d.file)}`;
+  return "";
+}
 
 function SubtleBackground() {
   const matRef = useRef<THREE.MeshBasicMaterial | null>(null);
@@ -39,7 +51,7 @@ export default function DocumentViewer() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [pageWidth, setPageWidth] = useState(900);
   const [libraryDocs, setLibraryDocs] = useState<ManifestDoc[]>([]);
-  const [selectedLibraryFile, setSelectedLibraryFile] = useState<string>("");
+  const [selectedDoc, setSelectedDoc] = useState<ManifestDoc | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const fullscreenRef = useRef<HTMLDivElement | null>(null);
@@ -115,15 +127,112 @@ export default function DocumentViewer() {
     };
   }, [dropdownOpen]);
 
-  const loadLibraryFile = (file: string) => {
-    setSelectedLibraryFile(file);
+  const loadLibraryDoc = async (doc: ManifestDoc) => {
+    const url = docUrl(doc);
+
+    setSelectedDoc(doc);
     setPdfPages(0);
     setPdfPage(1);
     setPdfError(null);
     pageElsRef.current = [];
     pageSyncEnabledRef.current = false;
-    setPdfUrl(`/documents/${encodeURIComponent(file)}`);
     setDropdownOpen(false);
+
+    if (!url) {
+      setPdfUrl(null);
+      setPdfError(
+        "This document has no URL or file path. Update public/documents/manifest.json to include either a 'url' or 'file'."
+      );
+      return;
+    }
+
+    // For externally-hosted PDFs, avoid prefetching with fetch() here. Many hosts block
+    // cross-origin reads (CORS), which would prevent the viewer from ever switching into
+    // PDF mode. Let react-pdf attempt the load and surface errors via onLoadError.
+    if (doc.url) {
+      try {
+        const res = await fetch(url, {
+          cache: "no-store",
+          headers: {
+            Range: "bytes=0-1023",
+          },
+        });
+
+        if (!res.ok) {
+          setPdfError(`Could not fetch PDF (HTTP ${res.status}).`);
+          // Still enter PDF mode so the user sees the error UI + fallback link.
+          setPdfUrl(url);
+          return;
+        }
+
+        const buf = await res.arrayBuffer();
+        const headBytes = new Uint8Array(buf).slice(0, 8);
+        const headText = new TextDecoder("utf-8").decode(new Uint8Array(buf).slice(0, 140));
+
+        // PDFs should start with "%PDF-". If they don't, pdf.js typically reports "Invalid PDF structure".
+        const isPdfHeader =
+          headBytes.length >= 5 &&
+          headBytes[0] === 0x25 &&
+          headBytes[1] === 0x50 &&
+          headBytes[2] === 0x44 &&
+          headBytes[3] === 0x46 &&
+          headBytes[4] === 0x2d;
+
+        if (!isPdfHeader) {
+          const contentType = res.headers.get("content-type") || "(missing content-type)";
+          setPdfError(
+            `This URL did not return a valid PDF header (%PDF-). HTTP ${res.status}. content-type: ${contentType}. Response starts with: ${JSON.stringify(
+              headText
+            )}`
+          );
+          // Still enter PDF mode so the user sees the error UI + fallback link.
+          setPdfUrl(url);
+          return;
+        }
+      } catch (err) {
+        // If this fetch is blocked (likely CORS), still allow react-pdf to try.
+        // The error UI will offer an "Open original PDF" link.
+      }
+
+      setPdfUrl(url);
+      return;
+    }
+
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) {
+        setPdfUrl(null);
+        setPdfError(`Could not fetch PDF (HTTP ${res.status}).`);
+        return;
+      }
+
+      const reader = res.body?.getReader();
+      if (reader) {
+        const { value } = await reader.read();
+        if (value) {
+          const head = new TextDecoder("utf-8").decode(value.slice(0, 120));
+          if (head.startsWith("version https://git-lfs.github.com/spec/v1")) {
+            setPdfUrl(null);
+            setPdfError(
+              "This PDF is stored with Git LFS, but the deployed site is serving the LFS pointer text file instead of the real PDF. Host PDFs externally (Vercel Blob) or configure your deploy to fetch LFS objects."
+            );
+            return;
+          }
+        }
+      }
+
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.toLowerCase().includes("pdf")) {
+        // Not fatal (some hosts omit the type), but helps diagnose invalid deployments.
+        // We still attempt to render.
+      }
+    } catch (err) {
+      setPdfUrl(null);
+      setPdfError(err instanceof Error ? err.message : String(err));
+      return;
+    }
+
+    setPdfUrl(url);
   };
 
   useEffect(() => {
@@ -135,7 +244,11 @@ export default function DocumentViewer() {
     setPdfPage(1);
   }, [pdfUrl]);
 
-  const selectedDownloadHref = selectedLibraryFile ? `/documents/${encodeURIComponent(selectedLibraryFile)}` : "";
+  const selectedDownloadHref = selectedDoc ? docUrl(selectedDoc) : "";
+  const selectedDownloadName = selectedDoc?.downloadName || selectedDoc?.file || undefined;
+  const selectedSourceUrl = selectedDoc?.url || (selectedDoc?.file ? docUrl(selectedDoc) : "");
+  const isExternalSelected = !!selectedDoc?.url;
+  const isVercelBlobSelected = !!selectedDoc?.url && selectedDoc.url.includes(".public.blob.vercel-storage.com/");
 
   const hasPdf = !!pdfUrl;
   const clampPage = (next: number) => {
@@ -281,9 +394,9 @@ export default function DocumentViewer() {
                   onClick={() => setDropdownOpen((v) => !v)}
                   aria-expanded={dropdownOpen}
                 >
-                  <span className={selectedLibraryFile ? "text-zinc-100" : "text-zinc-400"}>
-                    {selectedLibraryFile
-                      ? libraryDocs.find((d) => d.file === selectedLibraryFile)?.title ?? selectedLibraryFile
+                  <span className={selectedDoc ? "text-zinc-100" : "text-zinc-400"}>
+                    {selectedDoc
+                      ? selectedDoc.title
                       : "Select a document…"}
                   </span>
                   <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -297,18 +410,18 @@ export default function DocumentViewer() {
                     {libraryDocs.length ? (
                       libraryDocs.map((d) => (
                         <button
-                          key={d.file}
+                          key={docId(d)}
                           type="button"
                           className={
                             "flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs transition-colors " +
-                            (d.file === selectedLibraryFile
+                            (docId(d) === (selectedDoc ? docId(selectedDoc) : "")
                               ? "bg-green-500/20 text-white"
                               : "text-white hover:bg-green-500/25")
                           }
-                          onClick={() => loadLibraryFile(d.file)}
+                          onClick={() => loadLibraryDoc(d)}
                         >
                           <span className="truncate">{d.title}</span>
-                          {d.file === selectedLibraryFile ? <span className="text-[11px]">Selected</span> : null}
+                          {docId(d) === (selectedDoc ? docId(selectedDoc) : "") ? <span className="text-[11px]">Selected</span> : null}
                         </button>
                       ))
                     ) : (
@@ -375,16 +488,16 @@ export default function DocumentViewer() {
                   <div className="flex items-center gap-1.5">
                     <a
                       href={selectedDownloadHref}
-                      download={selectedLibraryFile || undefined}
+                      download={selectedDownloadName}
                       className={
                         "inline-flex h-7 w-7 items-center justify-center rounded-xl border transition-colors " +
-                        (selectedLibraryFile
+                        (selectedDoc
                           ? "border-green-500/60 bg-green-500 text-zinc-900 hover:bg-green-600"
                           : "pointer-events-none border-zinc-700/60 bg-zinc-800/60 text-zinc-400")
                       }
-                      aria-disabled={!selectedLibraryFile}
+                      aria-disabled={!selectedDoc}
                       aria-label="Download selected document"
-                      title={selectedLibraryFile ? "Download selected document" : "Select a document to download"}
+                      title={selectedDoc ? "Download selected document" : "Select a document to download"}
                     >
                       <Download className="h-3.5 w-3.5" />
                     </a>
@@ -406,7 +519,14 @@ export default function DocumentViewer() {
                 <div className="pdf-surface mt-2 w-full overflow-hidden rounded-none border border-zinc-800/70 bg-transparent">
                   <div className="pdf-scroll scrollbar-green h-[70vh] overflow-auto bg-transparent p-3" ref={pageContainerRef}>
                     <Document
-                      file={pdfUrl}
+                      file={isExternalSelected && pdfUrl ? { url: pdfUrl } : pdfUrl}
+                      options={
+                        isExternalSelected
+                          ? isVercelBlobSelected
+                            ? undefined
+                            : { disableRange: true, disableStream: true }
+                          : undefined
+                      }
                       onLoadSuccess={(doc: { numPages: number }) => {
                         setPdfPages(doc.numPages);
                         setPdfPage(1);
@@ -417,6 +537,21 @@ export default function DocumentViewer() {
                         <div className="grid gap-2 text-xs text-zinc-300">
                           <div>Could not load PDF.</div>
                           {pdfError ? <div className="text-zinc-400">{pdfError}</div> : null}
+                          {isExternalSelected && selectedSourceUrl ? (
+                            <div className="grid gap-2 pt-1">
+                              <div className="text-zinc-400">
+                                If this is a cross-site (CORS) restriction, the PDF can still be opened directly.
+                              </div>
+                              <a
+                                href={selectedSourceUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex h-8 w-fit items-center justify-center rounded-xl border border-green-500/60 bg-green-500 px-3 text-[11px] font-semibold text-zinc-900 transition-colors hover:bg-green-600"
+                              >
+                                Open original PDF
+                              </a>
+                            </div>
+                          ) : null}
                         </div>
                       }
                     >

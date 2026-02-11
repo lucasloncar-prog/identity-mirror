@@ -2,11 +2,13 @@
   "documents": [
     {
       "title": "The Modern Mechanisms of Mass Manipulation",
-      "file": "The Modern Mechanisms of Mass Manipulation.pdf"
+      "url": "https://x11l3qhlcmagwien.public.blob.vercel-storage.com/The%20Modern%20Mechanisms%20of%20Mass%20Manipulation.pdf",
+      "downloadName": "The Modern Mechanisms of Mass Manipulation.pdf"
     },
     {
       "title": "wizards 2020 10 31 final",
-      "file": "wizards_2020-10-31_final (1).pdf"
+      "url": "https://www.colorado.edu/cuwizards/sites/default/files/attached-files/wizards_2020-10-31_final.pdf",
+      "downloadName": "wizards_2020-10-31_final.pdf"
     }
   ]
 }
