@@ -586,48 +586,6 @@ function PixelClusterCircle(props: { value: number; birthSex: BirthSex }) {
   );
 }
 
-function HeaderLogo() {
-  const [stage, setStage] = useState<0 | 1 | 2>(0);
-  const src = stage === 0 ? "/favicon.svg" : stage === 1 ? "/favicon.ico" : null;
-
-  if (!src) {
-    // Minimal inline yin-yang fallback (always renders)
-    return (
-      <svg viewBox="0 0 64 64" className="h-full w-full" aria-label="Yin yang" role="img">
-        <defs>
-          <clipPath id="yyCircle">
-            <circle cx="32" cy="32" r="30" />
-          </clipPath>
-        </defs>
-        <g clipPath="url(#yyCircle)">
-          <rect x="2" y="2" width="60" height="60" fill="#fff" />
-          <path d="M32 2a30 30 0 1 0 0 60V2z" fill="#000" />
-          <path
-            d="M32 2c8.3 0 15 6.7 15 15S40.3 32 32 32 17 25.3 17 17 23.7 2 32 2z"
-            fill="#fff"
-          />
-          <path
-            d="M32 32c8.3 0 15 6.7 15 15S40.3 62 32 62 17 55.3 17 47s6.7-15 15-15z"
-            fill="#000"
-          />
-          <circle cx="32" cy="17" r="4" fill="#000" />
-          <circle cx="32" cy="47" r="4" fill="#fff" />
-        </g>
-        <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" />
-      </svg>
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt="GrayVisions.com"
-      className="h-full w-full"
-      onError={() => setStage((s) => (s === 0 ? 1 : 2))}
-    />
-  );
-}
-
 function HomePage() {
   React.useEffect(() => {
     document.title = "GrayVisions.com";
