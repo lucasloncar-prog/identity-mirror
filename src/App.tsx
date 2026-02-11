@@ -1447,12 +1447,6 @@ function HomePage() {
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-2">
                     <Link
-                      to="/trauma-recovery-resources"
-                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
-                    >
-                      Trauma Recovery Resources
-                    </Link>
-                    <Link
                       to="/recommended-books"
                       className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
                     >
