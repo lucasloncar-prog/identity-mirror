@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import CultDeprogrammingResources from "./pages/CultDeprogrammingResources";
 import DocumentViewer from "./pages/DocumentViewer";
@@ -11,11 +11,13 @@ function DropdownPanel({
   title,
   size = "base",
   defaultOpen,
+  accent,
   children,
 }: {
   title: string;
   size?: "sm" | "base";
   defaultOpen?: boolean;
+  accent?: "green";
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(!!defaultOpen);
@@ -37,7 +39,14 @@ function DropdownPanel({
             ? "bg-zinc-700"
             : "bg-zinc-700/80";
 
-  const wrapperTone = open ? "border-zinc-600" : "border-zinc-800/70";
+  const wrapperTone =
+    accent === "green"
+      ? open
+        ? "border-green-500 ring-1 ring-green-500"
+        : "border-zinc-800/70"
+      : open
+        ? "border-zinc-600"
+        : "border-zinc-800/70";
 
   return (
     <div className={"dp w-full rounded-2xl border overflow-hidden transition-colors " + wrapperTone}>
@@ -244,6 +253,15 @@ function ExampleSpectrumPair({
     "#232323 88%," +
     "#0f0f0f 95%," +
     "#000000 100%)";
+
+  const setValueFromPointerEvent = (e: React.PointerEvent) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = (x / rect.width) * 100;
+    setValue(clamp(Math.round(pct), 0, 100));
+  };
 
   const noiseSvg =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E";
@@ -592,9 +610,12 @@ function HomePage() {
   }, []);
 
   const [value, setValue] = useState(50);
+  const [spectrumKeyOpen, setSpectrumKeyOpen] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [stressRisk, setStressRisk] = useState(false);
   const [birthSex, setBirthSex] = useState<BirthSex>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const dragStateRef = useRef<{ active: boolean; pointerId: number | null }>({ active: false, pointerId: null });
 
   const label = useMemo(() => labelFor(value), [value]);
   const intensity = useMemo(() => intensityFor(value), [value]);
@@ -748,14 +769,39 @@ function HomePage() {
                   
 
                   {/* Femininity / Masculinity Spectrum Key */}
-                  <div className="mt-3 mb-3 flex items-center gap-3 text-sm font-semibold text-white bg-zinc-700/90 rounded-xl px-3 py-1">
-                    <span className="grid h-6 w-6 place-items-center rounded-full text-white">
-                      <IconKey className="h-4 w-4" />
+                  <button
+                    type="button"
+                    className={
+                      "mt-3 mb-2 flex w-full items-center justify-between gap-3 text-sm font-semibold text-white bg-zinc-600/90 rounded-xl px-3 py-1 border transition-colors " +
+                      (spectrumKeyOpen ? "border-green-500 ring-1 ring-green-500" : "border-transparent")
+                    }
+                    onClick={() => setSpectrumKeyOpen((v) => !v)}
+                    aria-expanded={spectrumKeyOpen}
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="grid h-6 w-6 place-items-center rounded-full text-white">
+                        <IconKey className="h-4 w-4" />
+                      </span>
+                      <span>Femininity / Masculinity Spectrum Key</span>
                     </span>
-                    <span>Femininity / Masculinity Spectrum Key</span>
-                  </div>
+                    <svg
+                      viewBox="0 0 24 24"
+                      className={
+                        "h-4 w-4 shrink-0 transition-transform " +
+                        (spectrumKeyOpen ? "rotate-180 text-green-500" : "text-white")
+                      }
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
 
-                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  {spectrumKeyOpen ? (
+                    <div className="rounded-2xl border border-green-500 ring-1 ring-green-500 bg-zinc-950/30 p-3">
+                      <div className="grid gap-2 sm:grid-cols-2">
                     {/* F */}
                     <div className="flex items-start gap-3">
                       <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-zinc-100 ring-1 ring-black/20">
@@ -803,11 +849,10 @@ function HomePage() {
 
                     {/* Track (placed below M, to the right of dual-tone) */}
                     <div className="flex items-start gap-3 sm:col-start-2">
-                      <div
-                        className="mt-1 h-3 w-28 overflow-hidden rounded-full ring-1 ring-zinc-700/60"
-                        style={{ backgroundImage: smoothTrackGradient }}
-                      />
-                      <div className="ml-2 text-[11px] text-zinc-400 leading-tight">
+                      <div className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded-full ring-1 ring-zinc-700/60">
+                        <div className="h-full w-full" style={{ backgroundImage: smoothTrackGradient }} />
+                      </div>
+                      <div className="text-[11px] text-zinc-400 leading-tight">
                         <span className="text-xs font-medium text-zinc-200">Codependent Continuum</span>
                         <div className="mt-1 text-[11px] leading-relaxed text-zinc-400">
                           This visual gradient can be used to demonstrate how <span className="text-zinc-200">femininity</span> and
@@ -816,16 +861,18 @@ function HomePage() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                      </div>
 
-                  <div className="mt-2 grid grid-cols-2 items-start gap-2 text-[11px] text-zinc-400">
-                    <span className="justify-self-end pr-1">
-                      <span className="font-medium text-zinc-200">Center Line</span>: perceptual equilibrium (highest contextual sensitivity)
-                    </span>
-                    <span className="justify-self-start pl-1">
-                      <span className="font-medium text-zinc-200">Position</span>: a perception‑based slider, not a value judgment
-                    </span>
-                  </div>
+                      <div className="mt-2 grid grid-cols-2 items-start gap-2 text-[11px] text-zinc-400">
+                        <span className="justify-self-end pr-1">
+                          <span className="font-medium text-zinc-200">Center Line</span>: perceptual equilibrium (highest contextual sensitivity)
+                        </span>
+                        <span className="justify-self-start pl-1">
+                          <span className="font-medium text-zinc-200">Position</span>: a perception‑based slider, not a value judgment
+                        </span>
+                      </div>
+                    </div>
+                  ) : null}
                 
 
                               </div>
@@ -878,7 +925,38 @@ function HomePage() {
                     }
                   />
 
-                  <div className="relative h-16 w-full overflow-visible pb-12">
+                  <div
+                    ref={trackRef}
+                    className="relative h-16 w-full overflow-visible pb-12"
+                    style={{ touchAction: "none" }}
+                    onPointerDown={(e) => {
+                      const el = trackRef.current;
+                      if (!el) return;
+                      dragStateRef.current = { active: true, pointerId: e.pointerId };
+                      el.setPointerCapture(e.pointerId);
+                      setValueFromPointerEvent(e);
+                    }}
+                    onPointerMove={(e) => {
+                      const s = dragStateRef.current;
+                      if (!s.active || s.pointerId !== e.pointerId) return;
+                      setValueFromPointerEvent(e);
+                    }}
+                    onPointerUp={(e) => {
+                      const el = trackRef.current;
+                      const s = dragStateRef.current;
+                      if (!s.active || s.pointerId !== e.pointerId) return;
+                      dragStateRef.current = { active: false, pointerId: null };
+                      if (el) el.releasePointerCapture(e.pointerId);
+                      setValueFromPointerEvent(e);
+                    }}
+                    onPointerCancel={(e) => {
+                      const el = trackRef.current;
+                      const s = dragStateRef.current;
+                      if (!s.active || s.pointerId !== e.pointerId) return;
+                      dragStateRef.current = { active: false, pointerId: null };
+                      if (el) el.releasePointerCapture(e.pointerId);
+                    }}
+                  >
                     {/* Bottom labels */}
                     <div
                       className="pointer-events-none absolute -bottom-10 left-1/2 z-20 -translate-x-1/2 px-2 py-0.5 text-[11px] text-zinc-500"
@@ -890,7 +968,7 @@ function HomePage() {
                     <div
                       className={
                         "pointer-events-none absolute -bottom-10 left-0 z-20 px-1.5 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
-                        (birthSex === "F" ? "ring-emerald-400/80" : "ring-transparent")
+                        (birthSex === "F" ? "ring-green-500" : "ring-transparent")
                       }
                     >
                       Female
@@ -898,7 +976,7 @@ function HomePage() {
                     <div
                       className={
                         "pointer-events-none absolute -bottom-10 right-0 z-20 px-1.5 py-0.5 text-xs text-zinc-400 rounded-sm ring-2 " +
-                        (birthSex === "M" ? "ring-emerald-400/80" : "ring-transparent")
+                        (birthSex === "M" ? "ring-green-500" : "ring-transparent")
                       }
                     >
                       Male
@@ -985,7 +1063,7 @@ function HomePage() {
                         type="checkbox"
                         checked={birthSex === "F"}
                         onChange={() => toggleBirthSex("F")}
-                        className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                        className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-green-500 checked:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                       Female
                     </label>
@@ -994,7 +1072,7 @@ function HomePage() {
                         type="checkbox"
                         checked={birthSex === "M"}
                         onChange={() => toggleBirthSex("M")}
-                        className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                        className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-300 shadow-inner checked:bg-green-500 checked:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                       Male
                     </label>
@@ -1015,7 +1093,7 @@ function HomePage() {
                       type="checkbox"
                       checked={advanced}
                       onChange={(e) => setAdvanced(e.target.checked)}
-                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-green-500 checked:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                     Show perceptual mechanics
                   </label>
@@ -1025,7 +1103,7 @@ function HomePage() {
                       type="checkbox"
                       checked={stressRisk}
                       onChange={(e) => setStressRisk(e.target.checked)}
-                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-emerald-500 checked:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      className="h-4 w-4 appearance-none rounded border border-zinc-600 bg-zinc-200 checked:bg-green-500 checked:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                     Stress Risk Index
                   </label>
@@ -1131,10 +1209,10 @@ function HomePage() {
                     <span>Stress Risk Index Key</span>
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-1">
-                    <KeyItem colorClass="bg-emerald-400" label="Low Risk" />
-                    <KeyItem colorClass="bg-amber-400" label="Mild Risk" />
-                    <KeyItem colorClass="bg-orange-400" label="Elevated Risk" />
-                    <KeyItem colorClass="bg-red-500" label="High Risk" />
+                    <KeyItem colorClass="bg-emerald-400" label="Low" />
+                    <KeyItem colorClass="bg-amber-400" label="Mild" />
+                    <KeyItem colorClass="bg-orange-400" label="Elevated" />
+                    <KeyItem colorClass="bg-red-500" label="High" />
                   </div>
                   <div className="mt-2 text-[11px] text-zinc-400">
                     This color band represents contextual stress signals around the spectrum—an overlay, not a judgment of worth.
@@ -1159,7 +1237,7 @@ function HomePage() {
                       <span
                         className={
                           "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
-                          (birthSex === "F" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
+                          (birthSex === "F" ? "ring-2 ring-green-500 text-zinc-400" : "ring-0 bg-transparent")
                         }
                       >
                         Female
@@ -1173,7 +1251,7 @@ function HomePage() {
                       <span
                         className={
                           "inline-flex items-center justify-center px-2 py-0.5 text-xs text-zinc-400 rounded-sm transition-colors " +
-                          (birthSex === "M" ? "ring-2 ring-emerald-400/80 text-zinc-400" : "ring-0 bg-transparent")
+                          (birthSex === "M" ? "ring-2 ring-green-500 text-zinc-400" : "ring-0 bg-transparent")
                         }
                       >
                         Male
@@ -1239,7 +1317,7 @@ function HomePage() {
               <div className="mt-3">
 
               <div className="grid gap-3">
-                <DropdownPanel title="Identity Mirroring">
+                <DropdownPanel accent="green" title="Identity Mirroring">
                   <div className="grid gap-3">
                     <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
                       <p className="text-xs text-zinc-300">
@@ -1260,7 +1338,7 @@ function HomePage() {
                       </p>
                     </div>
 
-                    <DropdownPanel size="sm" title="Positive Mirroring (+)">
+                    <DropdownPanel accent="green" size="sm" title="Positive Mirroring (+)">
                       <p className="text-xs text-zinc-300">
                         <span className="font-medium text-zinc-200">Positive mirroring</span> occurs when we model ourselves after
                         people of the <span className="text-zinc-200">same gender</span> or same-role peers. This form of mirroring
@@ -1268,14 +1346,14 @@ function HomePage() {
                       </p>
 
                       <div className="mt-3 grid gap-2">
-                        <DropdownPanel size="sm" title="Female to Female Mirroring">
+                        <DropdownPanel accent="green" size="sm" title="Female to Female Mirroring">
                           <p className="text-xs text-zinc-300">
                             In <span className="text-zinc-200">female-to-female mirroring</span>, identity calibration happens through
                             observation and comparison with other females in one’s environment—often below conscious awareness.
                           </p>
 
                           <div className="mt-3 grid gap-2">
-                            <DropdownPanel size="sm" title="Similar Females">
+                            <DropdownPanel accent="green" size="sm" title="Similar Females">
                               <p className="text-xs text-zinc-300">
                                 Females tend to mirror the females who feel <span className="text-zinc-200">most similar</span> to
                                 them—close friends, same-role peers, and people they identify with.
@@ -1290,7 +1368,7 @@ function HomePage() {
                               />
                             </DropdownPanel>
 
-                            <DropdownPanel size="sm" title="Different Females">
+                            <DropdownPanel accent="green" size="sm" title="Different Females">
                               <p className="text-xs text-zinc-300">
                                 Females also reflect off <span className="text-zinc-200">different</span> females through comparison
                                 analysis.
@@ -1307,14 +1385,14 @@ function HomePage() {
                           </div>
                         </DropdownPanel>
 
-                        <DropdownPanel size="sm" title="Male to Male Mirroring">
+                        <DropdownPanel accent="green" size="sm" title="Male to Male Mirroring">
                           <p className="text-xs text-zinc-300">
                             In <span className="text-zinc-200">male-to-male mirroring</span>, identity calibration occurs through
                             comparison with other males.
                           </p>
 
                           <div className="mt-3 grid gap-2">
-                            <DropdownPanel size="sm" title="Similar Males">
+                            <DropdownPanel accent="green" size="sm" title="Similar Males">
                               <ExampleSpectrumPair
                                 tightConnect
                                 title="Visual assistant: two male reference points"
@@ -1324,7 +1402,7 @@ function HomePage() {
                               />
                             </DropdownPanel>
 
-                            <DropdownPanel size="sm" title="Different Males">
+                            <DropdownPanel accent="green" size="sm" title="Different Males">
                               <ExampleSpectrumPair
                                 compact
                                 title="Visual assistant: contrast comparison"
@@ -1338,16 +1416,16 @@ function HomePage() {
                       </div>
                     </DropdownPanel>
 
-                    <DropdownPanel size="sm" title="Negative Mirroring (-)">
+                    <DropdownPanel accent="green" size="sm" title="Negative Mirroring (-)">
                       <p className="text-xs text-zinc-300">
                         <span className="font-medium text-zinc-200">Negative mirroring</span> occurs when we unconsciously model
                         ourselves against people of the <span className="text-zinc-200">opposite gender</span> or opposing roles.
                       </p>
 
                       <div className="mt-3 grid gap-2">
-                        <DropdownPanel size="sm" title="Female to Male Mirroring">
+                        <DropdownPanel accent="green" size="sm" title="Female to Male Mirroring">
                           <div className="mt-3 grid gap-2">
-                            <DropdownPanel size="sm" title="Female to Equal Male Mirroring">
+                            <DropdownPanel accent="green" size="sm" title="Female to Equal Male Mirroring">
                               <ExampleSpectrumPair
                                 tightConnect
                                 title="Visual assistant: female ↔ equal male"
@@ -1357,7 +1435,7 @@ function HomePage() {
                               />
                             </DropdownPanel>
 
-                            <DropdownPanel size="sm" title="Female to Different Male Mirroring">
+                            <DropdownPanel accent="green" size="sm" title="Female to Different Male Mirroring">
                               <ExampleSpectrumPair
                                 compact
                                 title="Visual assistant: female ↔ different male"
@@ -1369,9 +1447,9 @@ function HomePage() {
                           </div>
                         </DropdownPanel>
 
-                        <DropdownPanel size="sm" title="Male to Female Mirroring">
+                        <DropdownPanel accent="green" size="sm" title="Male to Female Mirroring">
                           <div className="mt-3 grid gap-2">
-                            <DropdownPanel size="sm" title="Male to Equal Female Mirroring">
+                            <DropdownPanel accent="green" size="sm" title="Male to Equal Female Mirroring">
                               <ExampleSpectrumPair
                                 tightConnect
                                 title="Visual assistant: male ↔ equal female"
@@ -1381,7 +1459,7 @@ function HomePage() {
                               />
                             </DropdownPanel>
 
-                            <DropdownPanel size="sm" title="Male to Different Female Mirroring">
+                            <DropdownPanel accent="green" size="sm" title="Male to Different Female Mirroring">
                               <ExampleSpectrumPair
                                 compact
                                 title="Visual assistant: male ↔ different female"
@@ -1397,50 +1475,50 @@ function HomePage() {
                   </div>
                 </DropdownPanel>
 
-                <DropdownPanel title="Identity Notes">
-  <div className="grid gap-3">
-    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
-      <p className="text-xs text-zinc-300">
-        <span className="font-medium text-zinc-200">Identity</span> in this framework is not treated as a fixed trait or essence.
-        It is modeled as a <span className="text-zinc-200">relational and perceptual process</span> that emerges through
-        contrast, context, and repeated social feedback.
-      </p>
-    </div>
+                <DropdownPanel accent="green" title="Identity Notes">
+                  <div className="grid gap-3">
+                    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+                      <p className="text-xs text-zinc-300">
+                        <span className="font-medium text-zinc-200">Identity</span> in this framework is not treated as a fixed trait or essence.
+                        It is modeled as a <span className="text-zinc-200">relational and perceptual process</span> that emerges through
+                        contrast, context, and repeated social feedback.
+                      </p>
+                    </div>
 
-    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
-      <p className="text-xs text-zinc-300">
-        The femininity–masculinity spectrum shown on this site represents a <span className="text-zinc-200">single
-        codependent continuum</span>, not two independent variables. An increase in one direction necessarily implies a
-        relative decrease in the other from a given perceptual standpoint.
-      </p>
-    </div>
+                    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+                      <p className="text-xs text-zinc-300">
+                        The femininity–masculinity spectrum shown on this site represents a <span className="text-zinc-200">single
+                        codependent continuum</span>, not two independent variables. An increase in one direction necessarily implies a
+                        relative decrease in the other from a given perceptual standpoint.
+                      </p>
+                    </div>
 
-    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
-      <p className="text-xs text-zinc-300">
-        <span className="font-medium text-zinc-200">Perceptual equilibrium</span> (the center of the spectrum) is modeled as the
-        point of highest contextual sensitivity. Individuals near this midpoint often experience greater variability in
-        self-concept across different environments.
-      </p>
-    </div>
+                    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+                      <p className="text-xs text-zinc-300">
+                        <span className="font-medium text-zinc-200">Perceptual equilibrium</span> (the center of the spectrum) is modeled as the
+                        point of highest contextual sensitivity. Individuals near this midpoint often experience greater variability in
+                        self-concept across different environments.
+                      </p>
+                    </div>
 
-    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
-      <p className="text-xs text-zinc-300">
-        Language used throughout this site is <span className="text-zinc-200">descriptive, not prescriptive</span>. Terms such as
-        feminine, masculine, positive mirroring, and negative mirroring are analytical tools intended to explain
-        perceptual mechanics — not moral judgments, diagnoses, or social prescriptions.
-      </p>
-    </div>
+                    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+                      <p className="text-xs text-zinc-300">
+                        Language used throughout this site is <span className="text-zinc-200">descriptive, not prescriptive</span>. Terms such as
+                        feminine, masculine, positive mirroring, and negative mirroring are analytical tools intended to explain
+                        perceptual mechanics — not moral judgments, diagnoses, or social prescriptions.
+                      </p>
+                    </div>
 
-    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
-      <p className="text-xs text-zinc-300">
-        This model assumes that <span className="text-zinc-200">perception is asymmetric</span>: how one experiences oneself may
-        differ substantially from how one is experienced by others. Both perspectives can be valid simultaneously.
-      </p>
-    </div>
-  </div>
-</DropdownPanel>
+                    <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 p-3">
+                      <p className="text-xs text-zinc-300">
+                        This model assumes that <span className="text-zinc-200">perception is asymmetric</span>: how one experiences oneself may
+                        differ substantially from how one is experienced by others. Both perspectives can be valid simultaneously.
+                      </p>
+                    </div>
+                  </div>
+                </DropdownPanel>
 
-                <DropdownPanel title="Resources">
+                <DropdownPanel accent="green" title="Resources">
                   <div className="py-2">
                     <div className="mb-2 text-center text-[11px] font-medium text-zinc-300">
                       Click to open resource pages
@@ -1448,13 +1526,13 @@ function HomePage() {
                     <div className="flex flex-wrap items-center justify-center gap-2">
                     <Link
                       to="/recommended-books"
-                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
+                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700 hover:ring-1 hover:ring-green-500 focus-visible:ring-1 focus-visible:ring-green-500 focus-visible:outline-none"
                     >
                       Recommended Books
                     </Link>
                     <Link
                       to="/documents"
-                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
+                      className="inline-flex w-auto items-center justify-center whitespace-nowrap rounded-xl border border-zinc-700/60 bg-zinc-700/90 px-3.5 py-2 text-sm font-semibold text-white hover:bg-zinc-700 hover:ring-1 hover:ring-green-500 focus-visible:ring-1 focus-visible:ring-green-500 focus-visible:outline-none"
                     >
                       Documents
                     </Link>
@@ -1462,7 +1540,7 @@ function HomePage() {
                   </div>
                 </DropdownPanel>
 
-                <DropdownPanel title="References">
+                <DropdownPanel accent="green" title="References">
                     
                     {/* Codependent / bipolar conceptualizations of masculinity & femininity */}
                     <ReferenceItem
